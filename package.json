@@ -1,12 +1,16 @@
 {
   "name": "proyecto",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Sistema de gestión de órdenes de servicio",
+  "main": "Backend/app.js",
   "scripts": {
+    "start": "node Backend/app.js",
+    "dev": "nodemon Backend/app.js",
+    "backend": "cd Backend && node app.js",
+    "crear-usuario": "node Backend/scripts/crearUsuario.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
+  "keywords": ["sistema-gestion", "ordenes-servicio", "nodejs", "express", "mysql"],
   "author": "",
   "license": "ISC",
   "dependencies": {
@@ -14,5 +18,11 @@
     "cors": "^2.8.5",
     "express": "^5.1.0",
     "mysql2": "^3.14.5"
+  },
+  "devDependencies": {
+    "nodemon": "^3.0.1"
+  },
+  "engines": {
+    "node": ">=16.0.0"
   }
 }
