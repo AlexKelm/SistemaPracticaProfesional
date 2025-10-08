@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Técnicos - Sistema de Gestión</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/tecnicos.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <a href="dashboard.html">
+          <img src="src/logo.png" alt="Logo LocalHost">
+        </a>
+        <h2>Dashboard</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="clientes.html">Clientes</a></li>
+          <li><a href="ordenes.html">Órdenes de Servicio</a></li>
+          <li><a href="agenda.html">Agenda</a></li>
+          <li><a href="tecnicos.html">Técnicos</a></li>
+          <li><a href="mantenimiento.html">Mantenimiento</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <header class="dashboard-header">
+        <h1 class="titulo">Gestión de Técnicos</h1>
+        <button id="logoutBtn" class="btn-primary">Cerrar sesión</button>
+      </header>
+
+      <div class="tecnicos-header">
+        <button class="btn-primary" id="btnAgregarTecnico">+ Nuevo Técnico</button>
+        <input type="text" id="buscadorTecnico" class="input-buscador" placeholder="🔍 Buscar técnico...">
+      </div>
+
+      <table class="tecnicos-table">
+        <thead>
+          <tr>
+            <th>Nombre</th>
+            <th>Especialidad</th>
+            <th>Teléfono</th>
+            <th>Email</th>
+            <th>Disponibilidad</th>
+            <th>Acciones</th>
+          </tr>
+        </thead>
+        <tbody id="tablaTecnicosBody">
+          <tr>
+            <td>Carlos López</td>
+            <td>Electricidad</td>
+            <td>3764-123456</td>
+            <td>carlos@correo.com</td>
+            <td>Disponible</td>
+            <td class="acciones">
+              <button class="btn-small btn-primary">Editar</button>
+              <button class="btn-small btn-danger">Eliminar</button>
+              <button class="btn-small btn-secondary">Ver Órdenes</button>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </main>
+  </div>
+
+  <script>
+    // Botón de cerrar sesión
+    document.getElementById("logoutBtn").addEventListener("click", () => {
+      window.location.href = "login.html";
+    });
+  </script>
+</body>
+</html>

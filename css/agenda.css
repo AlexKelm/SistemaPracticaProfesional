@@ -1,0 +1,78 @@
+.agenda-container {
+  padding: 20px;
+}
+
+.agenda-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.agenda-header h2 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+.agenda-content {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 20px;
+}
+
+.agenda-calendar {
+  background: #ffffff;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.1);
+}
+
+.agenda-events {
+  background: #f9f9f9;
+  border-radius: 8px;
+  padding: 20px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.05);
+}
+
+.agenda-events h3 {
+  margin-top: 0;
+}
+
+.agenda-events ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.agenda-events li {
+  padding: 10px 0;
+  border-bottom: 1px solid #ddd;
+}
+
+.agenda-events li:last-child {
+  border-bottom: none;
+}
+
+.agenda-separador {
+  height: 38px; /* igual al alto del botón */
+  min-width: 160px; /* igual al ancho del botón */
+  background: #eaeaea;
+  border-radius: 6px;
+  display: inline-block;
+  margin: 0;
+}
+
+.agenda-separador-hr {
+  border: none;
+  height: 38px;
+  width: 160px;
+  background: #eaeaea;
+  border-radius: 6px;
+  margin: 0;
+}
+
+/* Sidebar hover azul */
+.sidebar-nav ul li a:hover {
+  background: #2980b9;
+  color: #fff;
+}

@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Dashboard - Sistema de Gestión</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <a href="dashboard.html">
+          <img src="src/logo.png" alt="Logo LocalHost">
+        </a>
+        <h2>Dashboard</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <!-- Cambiamos a enlaces directos -->
+          <li><a href="clientes.html">Clientes</a></li>
+          <li><a href="ordenes.html">Órdenes de Servicio</a></li>
+          <li><a href="agenda.html">Agenda</a></li>
+          <li><a href="tecnicos.html">Técnicos</a></li>
+          <li><a href="mantenimiento.html">Mantenimiento</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <header class="dashboard-header">
+        <h1>Panel Principal</h1>
+        <button id="logoutBtn" class="btn-primary">Cerrar sesión</button>
+      </header>
+
+      <section id="content-area">
+        <p>Bienvenido al sistema de gestión de LocalHost. Seleccione un módulo en el menú lateral.</p>
+      </section>
+    </main>
+  </div>
+
+  <script>
+    // Botón de cerrar sesión
+    const logoutBtn = document.getElementById("logoutBtn");
+    if (logoutBtn) {
+      logoutBtn.addEventListener("click", () => {
+        // TODO: limpiar sesión si se usa
+        // localStorage.removeItem("usuario");
+        window.location.href = "login.html";
+      });
+    }
+  </script>
+</body>
+</html>

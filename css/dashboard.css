@@ -1,0 +1,94 @@
+/* Layout general */
+.dashboard-container {
+  display: flex;
+  min-height: 100vh;
+}
+
+/* Sidebar */
+.sidebar {
+  width: 240px;
+  background: #1e3c72;
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  padding: 20px;
+}
+
+.sidebar-logo {
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+.sidebar-logo img {
+  width: 180px;
+  max-width: 90%;
+  margin-bottom: 10px;
+}
+
+.sidebar-logo h2 {
+  font-size: 18px;
+  color: #fff;
+  margin: 0;
+}
+
+.sidebar-nav ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.sidebar-nav ul li {
+  margin: 15px 0;
+}
+
+.sidebar-nav ul li a {
+  text-decoration: none;
+  color: #fff;
+  font-weight: 500;
+  transition: 0.3s;
+  display: block;
+  padding: 8px 10px;
+  border-radius: 5px;
+}
+
+/* Hover  */
+.sidebar-nav ul li a:hover {
+  background: #2980b9;
+  color: #fff;
+}
+
+
+/* Contenido principal */
+.main-content {
+  flex: 1;
+  padding: 20px;
+  background: #f4f6f9;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.dashboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.dashboard-header h1 {
+  color: #1e3c72;
+}
+
+/* Área dinámica */
+#content-area {
+  flex: 1;
+  background: #fff;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+}
+.sidebar-logo img {
+    width: 180px;
+    max-width: 90%; 
+    margin-bottom: 10px;
+}

@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <title>Clientes - Sistema de Gestión</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/clientes.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <a href="dashboard.html">
+          <img src="src/logo.png" alt="Logo LocalHost">
+        </a>
+        <h2>Dashboard</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="clientes.html">Clientes</a></li>
+          <li><a href="ordenes.html">Órdenes de Servicio</a></li>
+          <li><a href="agenda.html">Agenda</a></li>
+          <li><a href="tecnicos.html">Técnicos</a></li>
+          <li><a href="mantenimiento.html">Mantenimiento</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <!-- Header superior -->
+      <header class="dashboard-header">
+        <h1>Clientes</h1>
+        <button id="logoutBtn" class="btn-primary">Cerrar sesión</button>
+      </header>
+
+      <!-- Contenido de clientes -->
+      <section id="content-area">
+        <div class="clientes-header">
+          <button class="btn-primary" id="btnAgregarCliente">+ Nuevo Cliente</button>
+          <input 
+            type="text" 
+            id="buscadorCliente" 
+            class="input-buscador" 
+            placeholder="🔍 Buscar cliente..."
+          >
+        </div>
+
+        <table class="clientes-table">
+          <thead>
+            <tr>
+              <th>Razón Social</th>
+              <th>CUIT</th>
+              <th>Teléfono</th>
+              <th>Email</th>
+              <th>Referencia</th>
+              <th>Acciones</th>
+            </tr>
+          </thead>
+          <tbody id="tablaClientes">
+            <!-- Filas dinámicas -->
+          </tbody>
+        </table>
+      </section>
+    </main>
+  </div>
+<!-- Modal para nuevo cliente -->
+<div id="modalNuevoCliente" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Nuevo Cliente</h2>
+    <form id="formNuevoCliente">
+      <label>Razón Social:</label>
+      <input type="text" id="inputRazonSocial" required>
+      <label>CUIT:</label>
+      <input type="text" id="inputCuit" required>
+      <label>Teléfono:</label>
+      <input type="text" id="inputTelefono">
+      <label>Email:</label>
+      <input type="email" id="inputMail">
+      <label>Nombre de referencia:</label>
+      <input type="text" id="inputNombre">
+      <label>Apellido de referencia:</label>
+      <input type="text" id="inputApellido">
+      <!-- Si quieres agregar estado/prioridad/fecha, descomenta y personaliza:
+      <label>Estado:</label>
+      <select id="selectEstado">
+        <option value="Activo">Activo</option>
+        <option value="Inactivo">Inactivo</option>
+      </select>
+      <label>Prioridad:</label>
+      <select id="selectPrioridad">
+        <option value="Alta">Alta</option>
+        <option value="Media">Media</option>
+        <option value="Baja">Baja</option>
+      </select>
+      <label>Fecha de alta:</label>
+      <input type="date" id="inputFechaAlta">
+      -->
+      <div style="margin-top:10px; display:flex; justify-content:center; gap:12px;">
+        <button type="submit" class="btn-primary">Guardar</button>
+        <button type="button" id="btnCancelarCliente" class="btn-secondary">Cancelar</button>
+      </div>
+    </form>
+  </div>
+</div>
+<!-- Modal para ver órdenes del cliente -->
+<div id="modalOrdenesCliente" class="modal" style="display:none;">
+  <div class="modal-content">
+    <h2>Órdenes del Cliente</h2>
+    <ul id="listaOrdenesCliente"></ul>
+    <div style="margin-top:10px;">
+      <button type="button" id="btnCerrarOrdenesCliente" class="btn-secondary">Cerrar</button>
+    </div>
+  </div>
+</div>
+  <!-- Scripts -->
+  <script src="js/clientes.js"></script>
+  <script src="js/dashboard.js"></script>
+</body>
+</html>
