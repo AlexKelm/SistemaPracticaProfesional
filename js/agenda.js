@@ -12,7 +12,7 @@ document.addEventListener('DOMContentLoaded', async function() {
 
   // Convierte las órdenes en eventos para FullCalendar
   const eventos = ordenes.map(o => ({
-    title: `Orden #${o.id_orden} - ${o.observacion || "Sin descripción"}`,
+    title: `Orden #${o.id} - ${o.descripcion || o.observacion || "Sin descripción"}`,
     start: o.fecha_servicio,
     allDay: true
   }));
@@ -53,7 +53,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   ordenes.forEach(o => {
     const fecha = formatearFecha(o.fecha_servicio);
     const li = document.createElement('li');
-    li.innerHTML = `<strong>${fecha}</strong> – Orden #${o.id_orden} (${o.observacion || "Sin descripción"})`;
+    li.innerHTML = `<strong>${fecha}</strong> – Orden #${o.id} (${o.descripcion || o.observacion || "Sin descripción"})`;
     eventList.appendChild(li);
   });
 });

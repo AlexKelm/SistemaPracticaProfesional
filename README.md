@@ -17,11 +17,11 @@ npm install
 ```
 
 ### Configuración de Base de Datos
-1. Crear base de datos MySQL llamada `proyecto`
-2. Configurar credenciales en `Backend/config/db.js`
+1. Crear base de datos MySQL con el archivo `BaseDeDatos.sql`
 3. Crear usuario administrador:
 ```bash
 npm run crear-usuario
+las credenciales son "admin", "admin123 luego de aplicar el hasheo
 ```
 
 ### Iniciar el Proyecto
@@ -30,6 +30,8 @@ npm start
 ```
 
 El servidor se ejecutará en `http://localhost:3000`
+
+Abrir el archivo html sea index.html par ir al login o dashboard.html para ir directo al menu principal 
 
 ### Scripts Disponibles
 - `npm start` - Inicia el servidor

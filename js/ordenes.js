@@ -34,17 +34,17 @@ function mostrarOrdenes(ordenes) {
   ordenes.forEach(orden => {
     const fila = document.createElement("tr");
     fila.innerHTML = `
-      <td>${orden.id_orden}</td>
+      <td>${orden.id}</td>
       <td>${orden.razon_social}</td>
-      <td>${orden.observacion}</td>
+      <td>${orden.descripcion || orden.observacion || ''}</td>
       <td>${orden.estado}</td>
       <td>${orden.prioridad}</td>
       <td>${formatearFecha(orden.fecha_creacion)}</td>
       <td>${formatearFecha(orden.fecha_servicio)}</td>
       <td class="acciones">
-        <button class="btn-accion editar" onclick="editarOrden(${orden.id_orden})">Editar</button>
-        <button class="btn-accion eliminar" onclick="eliminarOrden(${orden.id_orden})">Eliminar</button>
-        <button class="btn-accion ver" onclick="verOrden(${orden.id_orden})">Ver</button>
+        <button class="btn-accion editar" onclick="editarOrden(${orden.id})">Editar</button>
+        <button class="btn-accion eliminar" onclick="eliminarOrden(${orden.id})">Eliminar</button>
+        <button class="btn-accion ver" onclick="verOrden(${orden.id})">Ver</button>
       </td>
     `;
     tablaOrdenes.appendChild(fila);
@@ -54,6 +54,7 @@ function mostrarOrdenes(ordenes) {
 function filtrarOrdenes() {
   const texto = document.getElementById("buscarOrden").value.toLowerCase();
   const filtradas = ordenesGlobal.filter(orden =>
+    (orden.descripcion && orden.descripcion.toLowerCase().includes(texto)) ||
     (orden.observacion && orden.observacion.toLowerCase().includes(texto)) ||
     (orden.razon_social && orden.razon_social.toLowerCase().includes(texto)) ||
     (orden.estado && orden.estado.toLowerCase().includes(texto)) ||
@@ -74,7 +75,7 @@ async function abrirModal() {
   const clientes = await clientesResp.json();
   clientes.forEach(c => {
     const option = document.createElement("option");
-    option.value = c.id_cliente;
+    option.value = c.id;
     option.textContent = c.razon_social;
     selectCliente.appendChild(option);
   });
@@ -111,7 +112,7 @@ document.getElementById("formNuevaOrden").addEventListener("submit", async funct
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        id_cliente,
+        cliente_id: id_cliente,
         observacion,
         estado,
         prioridad,
@@ -138,7 +139,7 @@ async function editarOrden(id) {
 
     await abrirModal();
 
-    document.getElementById("selectCliente").value = orden.id_cliente;
+    document.getElementById("selectCliente").value = orden.cliente_id;
     document.getElementById("inputObservacion").value = orden.observacion || "";
     document.getElementById("selectEstado").value = orden.estado || "Pendiente";
     document.getElementById("selectPrioridad").value = orden.prioridad || "Media";
@@ -169,9 +170,9 @@ async function verOrden(id) {
     const cont = document.getElementById("contenidoVerOrden");
     cont.innerHTML = `
       <ul style="list-style:none; padding-left:0;">
-        <li><strong>Orden #:</strong> ${orden.id_orden}</li>
+        <li><strong>Orden #:</strong> ${orden.id}</li>
         <li><strong>Cliente:</strong> ${orden.razon_social}</li>
-        <li><strong>Observaciones:</strong> ${orden.observacion || "-"}</li>
+        <li><strong>Descripción:</strong> ${orden.descripcion || orden.observacion || "-"}</li>
         <li><strong>Estado:</strong> ${orden.estado || "-"}</li>
         <li><strong>Prioridad:</strong> ${orden.prioridad || "-"}</li>
         <li><strong>Fecha creación:</strong> ${formatearFecha(orden.fecha_creacion)}</li>
