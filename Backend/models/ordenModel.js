@@ -25,6 +25,7 @@ async function getById(id) {
 
 // Crear orden
 async function create(data) {
+  
   const conn = await getConnection();
   let cliente_id = data.cliente_id ?? data.id_cliente ?? null;
   let descripcion = data.descripcion ?? data.observacion ?? null;
@@ -50,6 +51,7 @@ async function update(id, data) {
   // Convertir undefined a null
   [cliente_id, observacion, estado, prioridad, fecha_creacion, fecha_servicio] =
     [cliente_id, observacion, estado, prioridad, fecha_creacion, fecha_servicio].map(v => v === undefined ? null : v);
+
 
   const [result] = await conn.execute(
     `UPDATE orden_servicio SET cliente_id = ?, observacion = ?, estado = ?, prioridad = ?, fecha_creacion = ?, fecha_servicio = ?

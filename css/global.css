@@ -54,6 +54,9 @@ body {
 }
 
 
-* {
+/* Transiciones específicas para elementos que las necesitan */
+.btn-primary, .btn-secondary, .btn-danger, 
+.tecnicos-table tbody tr, .clientes-table tbody tr, .ordenes-table tbody tr,
+.modal-content, .sidebar-nav ul li a {
   transition: all 0.3s ease-in-out;
 }

@@ -5,11 +5,13 @@ const { getConnection } = require("./config/db");
 
 const clienteRoutes = require("./routes/clienteRoutes");
 const ordenRoutes = require("./routes/ordenRoutes");
+const tecnicoRoutes = require("./routes/tecnicoRoutes");
 
 
 const app = express();
 app.use(express.json());
 app.use(cors());
+
 
 // login
 app.post("/login", async (req, res) => {
@@ -55,6 +57,9 @@ app.post("/login", async (req, res) => {
 app.use("/clientes", clienteRoutes);
 
 app.use("/ordenes", ordenRoutes);
+
+// rutas de técnicos
+app.use("/tecnicos", tecnicoRoutes);
 
 // Iniciar servidor
 app.listen(3000, () => {

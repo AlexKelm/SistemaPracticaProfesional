@@ -18,12 +18,11 @@
       </div>
       <nav class="sidebar-nav">
         <ul>
-          <!-- Cambiamos a enlaces directos -->
           <li><a href="clientes.html">Clientes</a></li>
           <li><a href="ordenes.html">Órdenes de Servicio</a></li>
           <li><a href="agenda.html">Agenda</a></li>
           <li><a href="tecnicos.html">Técnicos</a></li>
-          <li><a href="mantenimiento.html">Mantenimiento</a></li>
+          <li><a href="reclamos.html">Reclamos</a></li>
         </ul>
       </nav>
     </aside>
@@ -36,21 +35,45 @@
       </header>
 
       <section id="content-area">
-        <p>Bienvenido al sistema de gestión de LocalHost. Seleccione un módulo en el menú lateral.</p>
+        <div class="stats-cards">
+          <div class="stat-card">
+            <div class="stat-label">Órdenes Pendientes</div>
+            <div class="stat-number" id="stat-pendientes">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">En Proceso</div>
+            <div class="stat-number" id="stat-proceso">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Completadas</div>
+            <div class="stat-number" id="stat-completadas">0</div>
+          </div>
+          <div class="stat-card">
+            <div class="stat-label">Total Órdenes</div>
+            <div class="stat-number" id="stat-total">0</div>
+          </div>
+        </div>
+
+        <div class="dashboard-cards">
+          <div class="card">
+            <h2> Próximas Órdenes de Servicio</h2>
+            <ul id="proximasOrdenesList" class="proximas-ordenes-list">
+              <li class="no-ordenes">Cargando órdenes...</li>
+            </ul>
+            <a href="agenda.html" class="ver-todas">Ver calendario completo →</a>
+          </div>
+
+          <div class="card">
+            <h2> Reclamos</h2>
+            <ul id="reclamosList" class="reclamos-list">
+              <li class="no-reclamos">Cargando...</li>
+            </ul>
+          </div>
+        </div>
       </section>
     </main>
   </div>
 
-  <script>
-    // Botón de cerrar sesión
-    const logoutBtn = document.getElementById("logoutBtn");
-    if (logoutBtn) {
-      logoutBtn.addEventListener("click", () => {
-        // TODO: limpiar sesión si se usa
-        // localStorage.removeItem("usuario");
-        window.location.href = "login.html";
-      });
-    }
-  </script>
+  <script src="js/dashboard.js"></script>
 </body>
 </html>
