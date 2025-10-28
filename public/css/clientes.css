@@ -1,0 +1,446 @@
+/* ========================================
+   SECCIÓN: CLIENTES - ESTILOS MODERNOS
+   ======================================== */
+
+/* Contenedor de tabla */
+.table-container {
+  background: white;
+  border-radius: 12px;
+  overflow: visible;
+  box-shadow: var(--shadow-md);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+/* Tabla de clientes */
+.clientes-table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 0;
+  background: white;
+  table-layout: auto;
+}
+
+.clientes-table thead {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  color: white;
+  position: sticky;
+  top: 0;
+}
+
+.clientes-table th {
+  padding: 14px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: white;
+  border-bottom: 2px solid #0f172a;
+}
+
+.clientes-table td {
+  padding: 14px 14px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+  font-size: 14px !important;
+  line-height: 1.5;
+  word-wrap: break-word;
+  word-break: break-word;
+  overflow-wrap: break-word;
+}
+
+.clientes-table tbody tr {
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+}
+
+.clientes-table tbody tr:hover {
+  background: #f3f4f6;
+  box-shadow: inset 0 2px 4px rgba(59, 130, 246, 0.1);
+}
+
+.clientes-table tbody tr:hover td {
+  color: #1f2937;
+}
+
+.clientes-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.clientes-table td.acciones {
+  display: flex;
+  gap: 8px;
+  align-items: center;
+  padding: 14px 14px;
+  flex-wrap: wrap;
+  justify-content: flex-start;
+}
+
+.clientes-table td.acciones button {
+  padding: 8px 14px !important;
+  border-radius: 6px;
+  border: none;
+  font-size: 12px !important;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.clientes-table .btn-edit,
+.clientes-table .btn-primary {
+  background: #3b82f6 !important;
+  color: white !important;
+}
+
+.clientes-table .btn-edit:hover,
+.clientes-table .btn-primary:hover {
+  background: #2563eb !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.clientes-table .btn-delete,
+.clientes-table .btn-danger {
+  background: #ef4444 !important;
+  color: white !important;
+}
+
+.clientes-table .btn-delete:hover,
+.clientes-table .btn-danger:hover {
+  background: #dc2626 !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+.clientes-table .btn-view,
+.clientes-table .btn-secondary {
+  background: #8b5cf6 !important;
+  color: white !important;
+}
+
+.clientes-table .btn-view:hover,
+.clientes-table .btn-secondary:hover {
+  background: #7c3aed !important;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Sin datos */
+.no-datos {
+  text-align: center;
+  padding: 40px;
+  color: #9ca3af;
+  font-style: italic;
+}
+
+/* Encabezado clientes */
+.clientes-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+  gap: 15px;
+  flex-wrap: wrap;
+}
+
+.clientes-header .btn-primary {
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.clientes-header input,
+.input-buscador {
+  flex: 1;
+  min-width: 200px;
+  max-width: 350px;
+  padding: 10px 16px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  background: white;
+}
+
+.clientes-header input:focus,
+.input-buscador:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  outline: none;
+  background: white;
+}
+
+.clientes-header input::placeholder {
+  color: #d1d5db;
+}
+
+/* ========================================
+   MODAL STYLES
+   ======================================== */
+
+/* Modal backdrop */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: white;
+  border-radius: 12px;
+  box-shadow: var(--shadow-lg);
+  animation: slideUp 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+}
+
+@keyframes slideUp {
+  from {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 24px;
+  border-bottom: 1px solid #e5e7eb;
+  background: linear-gradient(135deg, #f9fafb 0%, #f3f4f6 100%);
+}
+
+.modal-header h2 {
+  margin: 0;
+  color: #1f2937;
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.btn-close {
+  background: none;
+  border: none;
+  font-size: 28px;
+  color: #9ca3af;
+  cursor: pointer;
+  padding: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 6px;
+  transition: all 0.3s ease;
+}
+
+.btn-close:hover {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.modal-content form {
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #374151;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-group input,
+.form-group select,
+.form-group textarea {
+  padding: 10px 12px;
+  border: 2px solid #e5e7eb;
+  border-radius: 8px;
+  font-size: 14px;
+  font-family: inherit;
+  transition: all 0.3s ease;
+  background: white;
+  color: #1f2937;
+}
+
+.form-group input:focus,
+.form-group select:focus,
+.form-group textarea:focus {
+  border-color: #3b82f6;
+  box-shadow: 0 0 0 4px rgba(59, 130, 246, 0.1);
+  outline: none;
+  background: white;
+}
+
+.form-group input:disabled,
+.form-group select:disabled {
+  background: #f3f4f6;
+  color: #9ca3af;
+  cursor: not-allowed;
+}
+
+.form-actions {
+  display: flex;
+  gap: 12px;
+  margin-top: 16px;
+  justify-content: flex-end;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.form-actions button {
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  font-size: 13px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.form-actions .btn-secondary {
+  background: #e5e7eb;
+  color: #374151;
+}
+
+.form-actions .btn-secondary:hover {
+  background: #d1d5db;
+  transform: translateY(-2px);
+  box-shadow: var(--shadow-md);
+}
+
+/* ========================================
+   LISTA DE ÓRDENES EN MODAL
+   ======================================== */
+
+.ordenes-list {
+  list-style: none;
+  padding: 24px;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.ordenes-list li {
+  padding: 12px;
+  background: #f9fafb;
+  border-radius: 8px;
+  border-left: 4px solid #3b82f6;
+  transition: all 0.3s ease;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.ordenes-list li:hover {
+  background: #f3f4f6;
+  border-left-color: #2563eb;
+  box-shadow: var(--shadow-sm);
+}
+
+.no-ordenes {
+  text-align: center;
+  color: #9ca3af;
+  padding: 32px !important;
+  border: none !important;
+  font-style: italic;
+}
+
+/* ========================================
+   RESPONSIVE
+   ======================================== */
+
+@media (max-width: 1024px) {
+  .clientes-table th,
+  .clientes-table td {
+    padding: 12px 10px;
+    font-size: 13px;
+  }
+
+  .clientes-table td.acciones button {
+    padding: 6px 10px;
+    font-size: 11px;
+  }
+}
+
+@media (max-width: 768px) {
+  .clientes-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .clientes-header .btn-primary,
+  .clientes-header input {
+    width: 100%;
+  }
+
+  .clientes-table {
+    font-size: 12px;
+  }
+
+  .clientes-table th,
+  .clientes-table td {
+    padding: 10px 8px;
+  }
+
+  .clientes-table td.acciones {
+    flex-direction: column;
+    gap: 4px;
+  }
+
+  .clientes-table td.acciones button {
+    width: 100%;
+    padding: 8px 4px;
+  }
+
+  .modal-content {
+    max-width: 95%;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .form-actions button {
+    width: 100%;
+  }
+}

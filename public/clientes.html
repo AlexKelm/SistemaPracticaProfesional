@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes - Sistema de Gestión</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/clientes.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <button id="sidebarToggle" class="sidebar-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="sidebar-logo">
+        <a href="dashboard.html">
+          <img src="logo.png" alt="Logo LocalHost">
+        </a>
+        <h2>Dashboard</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="clientes.html" class="active">Clientes</a></li>
+          <li><a href="ordenes.html">Órdenes de Servicio</a></li>
+          <li><a href="agenda.html">Agenda</a></li>
+          <li><a href="tecnicos.html">Técnicos</a></li>
+          <li><a href="reclamos.html">Reclamos</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <!-- Header superior -->
+      <header class="dashboard-header">
+        <div class="header-left">
+          <h1>Clientes</h1>
+        </div>
+        <button id="logoutBtn" class="btn-primary">Cerrar sesión</button>
+      </header>
+
+      <!-- Contenido de clientes -->
+      <section class="content-section">
+        <div class="clientes-header">
+          <button class="btn-primary" id="btnAgregarCliente">+ Nuevo Cliente</button>
+          <input 
+            type="text" 
+            id="buscadorCliente" 
+            class="input-buscador" 
+            placeholder="🔍 Buscar cliente..."
+          >
+        </div>
+
+        <div class="table-container">
+          <table class="clientes-table">
+            <thead>
+              <tr>
+                <th>Razón Social</th>
+                <th>CUIT</th>
+                <th>Teléfono</th>
+                <th>Email</th>
+                <th>Referencia</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaClientes">
+              <!-- Filas dinámicas -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal para nuevo cliente -->
+  <div id="modalNuevoCliente" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Nuevo Cliente</h2>
+        <button type="button" class="btn-close" id="btnCerrarModalCliente">&times;</button>
+      </div>
+      <form id="formNuevoCliente">
+        <div class="form-group">
+          <label>Razón Social:</label>
+          <input type="text" id="inputRazonSocial" required>
+        </div>
+        <div class="form-group">
+          <label>CUIT:</label>
+          <input type="text" id="inputCuit" required>
+        </div>
+        <div class="form-group">
+          <label>Teléfono:</label>
+          <input type="text" id="inputTelefono">
+        </div>
+        <div class="form-group">
+          <label>Email:</label>
+          <input type="email" id="inputMail">
+        </div>
+        <div class="form-group">
+          <label>Nombre de referencia:</label>
+          <input type="text" id="inputNombre">
+        </div>
+        <div class="form-group">
+          <label>Apellido de referencia:</label>
+          <input type="text" id="inputApellido">
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Guardar</button>
+          <button type="button" id="btnCancelarCliente" class="btn-secondary">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para ver órdenes del cliente -->
+  <div id="modalOrdenesCliente" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2>Órdenes del Cliente</h2>
+        <button type="button" class="btn-close" id="btnCerrarOrdenesCliente">&times;</button>
+      </div>
+      <ul id="listaOrdenesCliente" class="ordenes-list"></ul>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/clientes.js"></script>
+  <script>
+    // Toggle sidebar
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.querySelector('.sidebar');
+    const dashboardContainer = document.querySelector('.dashboard-container');
+
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        dashboardContainer.classList.toggle('sidebar-collapsed');
+        localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+      });
+
+      if (localStorage.getItem('sidebarCollapsed') === 'true') {
+        sidebar.classList.add('collapsed');
+        dashboardContainer.classList.add('sidebar-collapsed');
+      }
+    }
+  </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Técnicos - Sistema de Gestión</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/tecnicos.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <button id="sidebarToggle" class="sidebar-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="sidebar-logo">
+        <a href="dashboard.html">
+          <img src="logo.png" alt="Logo LocalHost">
+        </a>
+        <h2>Dashboard</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="clientes.html">Clientes</a></li>
+          <li><a href="ordenes.html">Órdenes de Servicio</a></li>
+          <li><a href="agenda.html">Agenda</a></li>
+          <li><a href="tecnicos.html" class="active">Técnicos</a></li>
+          <li><a href="reclamos.html">Reclamos</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <header class="dashboard-header">
+        <div class="header-left">
+          <h1 class="titulo">Gestión de Técnicos</h1>
+        </div>
+        <button id="logoutBtn" class="btn-primary">Cerrar sesión</button>
+      </header>
+
+      <section class="content-section">
+        <div class="tecnicos-header">
+          <button class="btn-primary" id="btnAgregarTecnico">+ Nuevo Técnico</button>
+          <input type="text" id="buscadorTecnico" class="input-buscador" placeholder="🔍 Buscar técnico...">
+        </div>
+
+        <div class="table-container">
+          <table class="tecnicos-table">
+            <thead>
+              <tr>
+                <th>Nombre</th>
+                <th>Usuario</th>
+                <th>Email</th>
+                <th>Especialidad</th>
+                <th>Teléfono</th>
+                <th>Estado</th>
+                <th>Fecha Creación</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaTecnicosBody">
+              <!-- Los datos se cargarán dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal para agregar/editar técnico -->
+  <div id="modalTecnico" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTitulo">Nuevo Técnico</h2>
+        <button type="button" class="btn-close" id="btnCerrarModalTecnico">&times;</button>
+      </div>
+      <form id="formTecnico">
+        <div class="form-group">
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" required>
+        </div>
+        <div class="form-group">
+          <label for="apellido">Apellido:</label>
+          <input type="text" id="apellido" name="apellido" required>
+        </div>
+        <div class="form-group">
+          <label for="usuario">Usuario:</label>
+          <input type="text" id="usuario" name="usuario" required>
+        </div>
+        <div class="form-group">
+          <label for="password">Contraseña:</label>
+          <input type="password" id="password" name="password" required>
+        </div>
+        <div class="form-group">
+          <label for="email">Email:</label>
+          <input type="email" id="email" name="email">
+        </div>
+        <div class="form-group">
+          <label for="especialidad">Especialidad:</label>
+          <input type="text" id="especialidad" name="especialidad">
+        </div>
+        <div class="form-group">
+          <label for="telefono">Teléfono:</label>
+          <input type="text" id="telefono" name="telefono">
+        </div>
+        <div class="form-group">
+          <label for="direccion">Dirección:</label>
+          <textarea id="direccion" name="direccion" rows="3"></textarea>
+        </div>
+        <div class="form-group" id="estadoGroup" style="display: none;">
+          <label for="activo">Estado:</label>
+          <select id="activo" name="activo">
+            <option value="true">Activo</option>
+            <option value="false">Inactivo</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn-secondary" id="cancelarTecnico">Cancelar</button>
+          <button type="submit" class="btn-primary" id="guardarTecnico">Guardar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Modal para ver órdenes del técnico -->
+  <div id="modalOrdenes" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="modalTituloOrdenes">Órdenes del Técnico</h2>
+        <button type="button" class="btn-close" id="btnCerrarModalOrdenes">&times;</button>
+      </div>
+      <div id="ordenesTecnico">
+        <!-- Las órdenes se cargarán dinámicamente -->
+      </div>
+    </div>
+  </div>
+
+  <script src="js/tecnicos.js"></script>
+  <script>
+    // Toggle sidebar
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.querySelector('.sidebar');
+    const dashboardContainer = document.querySelector('.dashboard-container');
+
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        dashboardContainer.classList.toggle('sidebar-collapsed');
+        localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+      });
+
+      if (localStorage.getItem('sidebarCollapsed') === 'true') {
+        sidebar.classList.add('collapsed');
+        dashboardContainer.classList.add('sidebar-collapsed');
+      }
+    }
+  </script>
+</body>
+</html>

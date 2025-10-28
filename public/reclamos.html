@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reclamos - Sistema de Gestión</title>
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/mantenimiento.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <button id="sidebarToggle" class="sidebar-toggle">
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+      <div class="sidebar-logo">
+        <a href="dashboard.html">
+          <img src="logo.png" alt="Logo LocalHost">
+        </a>
+        <h2>Dashboard</h2>
+      </div>
+      <nav class="sidebar-nav">
+        <ul>
+          <li><a href="dashboard.html">Dashboard</a></li>
+          <li><a href="clientes.html">Clientes</a></li>
+          <li><a href="ordenes.html">Órdenes de Servicio</a></li>
+          <li><a href="agenda.html">Agenda</a></li>
+          <li><a href="tecnicos.html">Técnicos</a></li>
+          <li><a href="reclamos.html" class="active">Reclamos</a></li>
+        </ul>
+      </nav>
+    </aside>
+
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <header class="dashboard-header">
+        <div class="header-left">
+          <h1 class="titulo">Gestión de Reclamos</h1>
+        </div>
+        <button id="logoutBtn" class="btn-primary">Cerrar sesión</button>
+      </header>
+
+      <section class="content-section">
+        <div class="reclamos-header">
+          <button class="btn-primary" id="btnAgregarReclamo">+ Nuevo Reclamo</button>
+          <input type="text" id="buscadorReclamo" class="input-buscador" placeholder="🔍 Buscar reclamo...">
+        </div>
+
+        <div class="table-container">
+          <table class="reclamos-table">
+            <thead>
+              <tr>
+                <th>ID</th>
+                <th>Cliente</th>
+                <th>Descripción</th>
+                <th>Fecha Creación</th>
+                <th>Estado</th>
+                <th>Prioridad</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaReclamos">
+              <!-- Los datos se cargarán dinámicamente -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="js/reclamos.js"></script>
+  <script>
+    // Toggle sidebar
+    const sidebarToggle = document.getElementById('sidebarToggle');
+    const sidebar = document.querySelector('.sidebar');
+    const dashboardContainer = document.querySelector('.dashboard-container');
+
+    if (sidebarToggle) {
+      sidebarToggle.addEventListener('click', () => {
+        sidebar.classList.toggle('collapsed');
+        dashboardContainer.classList.toggle('sidebar-collapsed');
+        localStorage.setItem('sidebarCollapsed', sidebar.classList.contains('collapsed'));
+      });
+
+      if (localStorage.getItem('sidebarCollapsed') === 'true') {
+        sidebar.classList.add('collapsed');
+        dashboardContainer.classList.add('sidebar-collapsed');
+      }
+    }
+  </script>
+</body>
+</html>

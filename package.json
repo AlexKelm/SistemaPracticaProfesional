@@ -2,12 +2,12 @@
   "name": "proyecto",
   "version": "1.0.0",
   "description": "Sistema de gestión de órdenes de servicio",
-  "main": "Backend/app.js",
+  "main": "src/app.js",
   "scripts": {
-    "start": "node Backend/app.js",
-    "dev": "nodemon Backend/app.js",
-    "backend": "cd Backend && node app.js",
-    "crear-usuario": "node Backend/scripts/crearUsuario.js",
+    "start": "node src/app.js",
+    "dev": "nodemon src/app.js",
+    "crear-usuario": "node src/scripts/crearUsuario.js",
+    "crear-tecnicos": "node src/scripts/crearTecnicos.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": ["sistema-gestion", "ordenes-servicio", "nodejs", "express", "mysql"],
