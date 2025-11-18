@@ -8,6 +8,7 @@ const { getConnection } = require("./config/db");
 const clienteRoutes = require("./routes/clienteRoutes");
 const ordenRoutes = require("./routes/ordenRoutes");
 const tecnicoRoutes = require("./routes/tecnicoRoutes");
+const reclamoRoutes = require("./routes/reclamoRoutes");
 
 const app = express();
 
@@ -69,16 +70,19 @@ app.post("/login", async (req, res) => {
 app.use("/api/clientes", clienteRoutes);
 app.use("/api/ordenes", ordenRoutes);
 app.use("/api/tecnicos", tecnicoRoutes);
+app.use("/api/reclamos", reclamoRoutes);
 
 // Ruta para servir archivos HTML (SPA fallback)
 app.use((req, res) => {
   res.sendFile(path.join(__dirname, "../public/index.html"));
 });
 
-// Iniciar servidor
+// Exportar la app sin iniciar el servidor si es entorno de pruebas
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => {
-  console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
-});
+if (process.env.NODE_ENV !== 'test') {
+  app.listen(PORT, () => {
+    console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+  });
+}
 
 module.exports = app;

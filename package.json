@@ -6,9 +6,11 @@
   "scripts": {
     "start": "node src/app.js",
     "dev": "nodemon src/app.js",
+    "test": "cross-env NODE_ENV=test jest --runInBand",
+    "coverage": "cross-env NODE_ENV=test jest --coverage --runInBand",
     "crear-usuario": "node src/scripts/crearUsuario.js",
     "crear-tecnicos": "node src/scripts/crearTecnicos.js",
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "lint:audit": "npm audit --production || exit 0"
   },
   "keywords": ["sistema-gestion", "ordenes-servicio", "nodejs", "express", "mysql"],
   "author": "",
@@ -20,7 +22,21 @@
     "mysql2": "^3.14.5"
   },
   "devDependencies": {
-    "nodemon": "^3.0.1"
+    "cross-env": "^7.0.3",
+    "jest": "^29.7.0",
+    "nodemon": "^3.0.1",
+    "supertest": "^7.0.0"
+  },
+  "jest": {
+    "testEnvironment": "node",
+    "coverageThreshold": {
+      "global": {
+        "statements": 75,
+        "branches": 65,
+        "functions": 85,
+        "lines": 75
+      }
+    }
   },
   "engines": {
     "node": ">=16.0.0"

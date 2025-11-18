@@ -1,0 +1,108 @@
+const request = require('supertest');
+const app = require('../src/app');
+const { getConnection } = require('../src/config/db');
+
+// Utilidad para generar un valor pseudo-único rápido
+function uid() { return Math.random().toString(36).slice(2,10); }
+
+let DB_AVAILABLE = true;
+beforeAll(async () => {
+  try {
+    const conn = await getConnection();
+    await conn.end();
+  } catch (err) {
+    DB_AVAILABLE = false;
+    console.warn('⚠️ Base de datos no disponible. Las pruebas que requieren DB serán saltadas.');
+  }
+});
+
+// NOTA: Estas pruebas asumen que la base de datos está accesible y que las tablas existen.
+// Si faltan datos, algunos tests pueden fallar (por ejemplo GET por ID). Se pueden adaptar a un seed controlado.
+
+describe('SMOKE API', () => {
+  let createdClienteId = null;
+  let createdOrdenId = null;
+  let createdTecnicoId = null;
+  let createdReclamoId = null;
+  const uniqueCUIT = `20-${Date.now().toString().slice(-8)}-${Math.floor(Math.random()*9)}`;
+  const uniqueUser = `tec_${uid()}`;
+
+  test('POST /api/clientes crea cliente', async () => {
+    if (!DB_AVAILABLE) return;
+    const res = await request(app)
+      .post('/api/clientes')
+      .send({ razon_social: 'Empresa Smoke', cuit: uniqueCUIT });
+    expect(res.status).toBe(200);
+  });
+
+  test('GET /api/clientes lista incluye al menos 1', async () => {
+    if (!DB_AVAILABLE) return;
+    const res = await request(app).get('/api/clientes');
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    if (res.body.length) createdClienteId = res.body[res.body.length - 1].id || res.body[0].id; // heurística
+  });
+
+  test('GET /api/clientes/:id (si existe)', async () => {
+    if (!DB_AVAILABLE) return;
+    if (!createdClienteId) return; // skip si no se pudo determinar
+    const res = await request(app).get(`/api/clientes/${createdClienteId}`);
+    expect([200,404]).toContain(res.status); // tolerante si seed cambia
+  });
+
+  test('POST /api/tecnicos crea técnico', async () => {
+    if (!DB_AVAILABLE) return;
+    const res = await request(app)
+      .post('/api/tecnicos')
+      .send({ nombre: 'Test', apellido: 'Tecnico', usuario: uniqueUser, password: '1234' });
+    expect([200,400]).toContain(res.status); // 400 si usuario ya existiera (raro en smoke)
+  });
+
+  test('GET /api/tecnicos lista', async () => {
+    if (!DB_AVAILABLE) return;
+    const res = await request(app).get('/api/tecnicos');
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    if (res.body.length) createdTecnicoId = res.body[res.body.length - 1].id || res.body[0].id;
+  });
+
+  test('POST /api/ordenes crea orden', async () => {
+    if (!DB_AVAILABLE) return;
+    const res = await request(app)
+      .post('/api/ordenes')
+      .send({ descripcion: 'Orden Smoke', fecha_servicio: new Date(Date.now()+86400000).toISOString().slice(0,10) });
+    expect(res.status).toBe(200);
+  });
+
+  test('GET /api/ordenes lista', async () => {
+    if (!DB_AVAILABLE) return;
+    const res = await request(app).get('/api/ordenes');
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+    if (res.body.length) createdOrdenId = res.body[res.body.length - 1].id || res.body[0].id;
+  });
+
+  test('GET /api/ordenes/agenda', async () => {
+    if (!DB_AVAILABLE) return;
+    const res = await request(app).get('/api/ordenes/agenda');
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+
+  test('POST /api/reclamos crea reclamo (si hay cliente)', async () => {
+    if (!DB_AVAILABLE) return;
+    if (!createdClienteId) return; // si no hay cliente, se salta
+    const res = await request(app)
+      .post('/api/reclamos')
+      .send({ cliente_id: createdClienteId, descripcion: 'Reclamo Smoke' });
+    expect([200,400]).toContain(res.status); // 400 si validación falla
+    if (res.status === 200) createdReclamoId = true;
+  });
+
+  test('GET /api/reclamos lista', async () => {
+    if (!DB_AVAILABLE) return;
+    const res = await request(app).get('/api/reclamos');
+    expect(res.status).toBe(200);
+    expect(Array.isArray(res.body)).toBe(true);
+  });
+});

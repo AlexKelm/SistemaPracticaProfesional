@@ -28,29 +28,44 @@ async function getById(id) {
 // Crear técnico
 async function create(data) {
   const conn = await getConnection();
-  const { nombre, apellido, usuario, password, email, especialidad, telefono, direccion } = data;
-  
-  // Validar obligatorios
-  if (!nombre || !apellido || !usuario || !password) {
-    throw new Error("Nombre, apellido, usuario y contraseña son obligatorios");
+  try {
+    const { nombre, apellido, usuario, password, email, especialidad, telefono, direccion } = data || {};
+
+    // Validar obligatorios
+    if (!nombre || !apellido || !usuario || !password) {
+      throw new Error("Nombre, apellido, usuario y contraseña son obligatorios");
+    }
+
+    // Verificar que el usuario no exista
+    const [existingUser] = await conn.execute(
+      "SELECT id_tecnico FROM tecnico WHERE usuario = ?",
+      [usuario]
+    );
+
+    if (existingUser.length > 0) {
+      throw new Error("El usuario ya existe");
+    }
+
+    // Asegurar que no se envían undefined a MySQL
+    const valores = [
+      nombre,
+      apellido,
+      usuario,
+      password, // (en un futuro se debe hashear antes de guardar)
+      email ?? null,
+      especialidad ?? null,
+      telefono ?? null,
+      direccion ?? null
+    ];
+
+    await conn.execute(
+      `INSERT INTO tecnico (nombre, apellido, usuario, password, email, especialidad, telefono, direccion, activo)
+       VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE)`,
+      valores
+    );
+  } finally {
+    await conn.end();
   }
-
-  // Verificar que el usuario no exista
-  const [existingUser] = await conn.execute(
-    "SELECT id_tecnico FROM tecnico WHERE usuario = ?",
-    [usuario]
-  );
-
-  if (existingUser.length > 0) {
-    throw new Error("El usuario ya existe");
-  }
-
-  await conn.execute(
-    `INSERT INTO tecnico (nombre, apellido, usuario, password, email, especialidad, telefono, direccion, activo)
-     VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE)`,
-    [nombre, apellido, usuario, password, email, especialidad, telefono, direccion]
-  );
-  await conn.end();
 }
 
 // Actualizar técnico
