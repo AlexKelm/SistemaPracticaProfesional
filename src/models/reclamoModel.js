@@ -1,19 +1,16 @@
 const { getConnection } = require("../config/db");
 
-// Asegura que la tabla 'reclamo' exista para los entornos donde el SQL base no la creó
+// Asegura que la tabla 'reclamos' exista (ya está definida en el esquema, pero mantenemos por compatibilidad)
 async function ensureTableExists(conn) {
+  // En el nuevo esquema la tabla ya se crea; esta función se deja vacía o se puede eliminar
+  // Si querés mantener auto-creación:
   await conn.execute(`
-    CREATE TABLE IF NOT EXISTS reclamo (
-      id INT(11) NOT NULL AUTO_INCREMENT,
-      cliente_id INT(11) NOT NULL,
-      descripcion TEXT DEFAULT NULL,
-      estado VARCHAR(20) DEFAULT 'Pendiente',
-      fecha_creacion DATE NOT NULL,
-      fecha_resolucion DATE DEFAULT NULL,
-      PRIMARY KEY (id),
-      KEY idx_reclamo_cliente (cliente_id),
-      CONSTRAINT reclamo_ibfk_cliente FOREIGN KEY (cliente_id) REFERENCES cliente(id) ON DELETE CASCADE
-    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    CREATE TABLE IF NOT EXISTS reclamos (
+      id INT NOT NULL AUTO_INCREMENT,
+      detalles VARCHAR(400) DEFAULT NULL,
+      fecha DATE DEFAULT NULL,
+      PRIMARY KEY (id)
+    ) ENGINE=InnoDB;
   `);
 }
 
@@ -23,9 +20,7 @@ async function getAll() {
   try {
     await ensureTableExists(conn);
     const [rows] = await conn.execute(
-      `SELECT r.*, c.razon_social 
-       FROM reclamo r 
-       JOIN cliente c ON r.cliente_id = c.id`
+      `SELECT r.* FROM reclamos r`
     );
     return rows;
   } finally {
@@ -39,7 +34,7 @@ async function getById(id) {
   try {
     await ensureTableExists(conn);
     const [rows] = await conn.execute(
-      "SELECT * FROM reclamo WHERE id = ?",
+      "SELECT * FROM reclamos WHERE id = ?",
       [id]
     );
     return rows[0];
@@ -53,16 +48,16 @@ async function create(data) {
   const conn = await getConnection();
   try {
     await ensureTableExists(conn);
-    const { cliente_id, descripcion, estado, fecha_creacion } = data;
+    const { detalles, fecha } = data;
     
-    if (!cliente_id) {
-      throw new Error("cliente_id es obligatorio");
+    if (!detalles) {
+      throw new Error("detalles es obligatorio");
     }
 
     await conn.execute(
-      `INSERT INTO reclamo (cliente_id, descripcion, estado, fecha_creacion)
-       VALUES (?, ?, ?, ?)`,
-      [cliente_id, descripcion ?? null, (estado ?? "Pendiente"), (fecha_creacion ? new Date(fecha_creacion) : new Date())]
+      `INSERT INTO reclamos (detalles, fecha)
+       VALUES (?, ?)`,
+      [detalles, fecha ? new Date(fecha) : new Date()]
     );
   } finally {
     await conn.end();
@@ -74,13 +69,21 @@ async function update(id, data) {
   const conn = await getConnection();
   try {
     await ensureTableExists(conn);
-    const { descripcion, estado, fecha_resolucion } = data;
+    const { detalles, fecha } = data;
     
+    const updates = [];
+    const valores = [];
+    if (detalles !== undefined) { updates.push('detalles = ?'); valores.push(detalles); }
+    if (fecha !== undefined) { updates.push('fecha = ?'); valores.push(fecha); }
+
+    if (updates.length === 0) {
+      return { affectedRows: 0 };
+    }
+
+    valores.push(id);
     const [result] = await conn.execute(
-      `UPDATE reclamo 
-       SET descripcion = ?, estado = ?, fecha_resolucion = ? 
-       WHERE id = ?`,
-      [descripcion ?? null, estado ?? null, fecha_resolucion ?? null, id]
+      `UPDATE reclamos SET ${updates.join(', ')} WHERE id = ?`,
+      valores
     );
     return result;
   } finally {
@@ -94,7 +97,7 @@ async function remove(id) {
   try {
     await ensureTableExists(conn);
     const [result] = await conn.execute(
-      "DELETE FROM reclamo WHERE id = ?",
+      "DELETE FROM reclamos WHERE id = ?",
       [id]
     );
     return result;

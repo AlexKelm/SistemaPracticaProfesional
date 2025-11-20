@@ -23,7 +23,9 @@ function getPrioridadClass(prioridad) {
 function getEstadoClass(estado) {
   const estados = {
     'pendiente': 'estado-pendiente',
-    'en_proceso': 'estado-en_proceso'
+    'en_proceso': 'estado-en_proceso',
+    'completada': 'estado-completada',
+    'cancelada': 'estado-cancelada'
   };
   
   return estados[estado] || 'estado-pendiente';
@@ -86,30 +88,8 @@ async function cargarProximasOrdenes() {
       });
     }
 
-    // Mostrar órdenes urgentes
-    const urgentesLista = document.getElementById('reclamosList');
-    if (ordenesUrgentes.length === 0) {
-      urgentesLista.innerHTML = '<li class="no-ordenes">No hay reclamos</li>';
-    } else {
-      urgentesLista.innerHTML = ordenesUrgentes.map(o => `
-        <li data-orden-id="${o.id}" class="orden-clickeable">
-          <span class="orden-fecha">${formatearFecha(o.fecha_servicio)}</span>
-          <span class="orden-detalle">
-            Orden #${o.id} - ${o.descripcion || o.observacion || "Sin descripción"}
-            <span class="orden-prioridad ${getPrioridadClass(o.prioridad)}">${o.prioridad || 'media'}</span>
-            <span class="orden-estado ${getEstadoClass(o.estado)}">${o.estado || 'pendiente'}</span>
-          </span>
-        </li>
-      `).join('');
-
-      // Agregar listeners a los elementos
-      urgentesLista.querySelectorAll('.orden-clickeable').forEach(li => {
-        li.addEventListener('click', function() {
-          const ordenId = this.getAttribute('data-orden-id');
-          window.location.href = `ordenes.html?id=${ordenId}`;
-        });
-      });
-    }
+    // Mostrar reclamos recientes
+    cargarReclamos();
 
     // Actualizar estadísticas
     actualizarEstadisticas(ordenes);
@@ -118,8 +98,51 @@ async function cargarProximasOrdenes() {
     console.error("Error al cargar órdenes:", error);
     document.getElementById('proximasOrdenesList').innerHTML = 
       '<li class="no-ordenes">Error al cargar las órdenes</li>';
+  }
+}
+
+// Cargar reclamos recientes
+async function cargarReclamos() {
+  try {
+    const response = await fetch("/api/reclamos");
+    const reclamos = await response.json();
+
+    if (!Array.isArray(reclamos)) {
+      console.error("La respuesta no es un array:", reclamos);
+      return;
+    }
+
+    // Ordenar por fecha (más recientes primero) y tomar los últimos 8
+    const reclamosRecientes = reclamos
+      .sort((a, b) => new Date(b.fecha) - new Date(a.fecha))
+      .slice(0, 8);
+
+    const reclamosLista = document.getElementById('reclamosList');
+    
+    if (reclamosRecientes.length === 0) {
+      reclamosLista.innerHTML = '<li class="no-reclamos">No hay reclamos registrados</li>';
+    } else {
+      reclamosLista.innerHTML = reclamosRecientes.map(r => `
+        <li data-reclamo-id="${r.id}" class="reclamo-clickeable">
+          <span class="reclamo-fecha">${formatearFecha(r.fecha)}</span>
+          <span class="reclamo-detalle">
+            #${r.id} - ${r.detalles || 'Sin detalles'}
+          </span>
+        </li>
+      `).join('');
+
+      // Agregar listeners a los elementos
+      reclamosLista.querySelectorAll('.reclamo-clickeable').forEach(li => {
+        li.addEventListener('click', function() {
+          window.location.href = 'reclamos.html';
+        });
+      });
+    }
+
+  } catch (error) {
+    console.error("Error al cargar reclamos:", error);
     document.getElementById('reclamosList').innerHTML = 
-      '<li class="no-ordenes">Error al cargar las órdenes</li>';
+      '<li class="no-reclamos">Error al cargar los reclamos</li>';
   }
 }
 
@@ -128,14 +151,17 @@ function actualizarEstadisticas(ordenes) {
   const hoy = new Date();
   hoy.setHours(0, 0, 0, 0);
 
-  const pendientes = ordenes.filter(o => o.estado === 'Pendiente').length;
-  const enProceso = ordenes.filter(o => o.estado === 'En Proceso').length;
-  const completadasHoy = ordenes.filter(o => o.estado === 'Finalizada').length;
+  // Usar los valores del nuevo esquema (minúsculas con guión bajo)
+  const pendientes = ordenes.filter(o => o.estado === 'pendiente').length;
+  const enProceso = ordenes.filter(o => o.estado === 'en_proceso').length;
+  const completadas = ordenes.filter(o => o.estado === 'completada').length;
   
   document.getElementById('stat-pendientes').textContent = pendientes;
   document.getElementById('stat-proceso').textContent = enProceso;
-  document.getElementById('stat-completadas').textContent = completadasHoy;
+  document.getElementById('stat-completadas').textContent = completadas;
   document.getElementById('stat-total').textContent = ordenes.length;
+  
+
 }
 
 // Inicialización al cargar el DOM
@@ -156,3 +182,9 @@ document.addEventListener("DOMContentLoaded", () => {
   // Actualizar cada 5 minutos
   setInterval(cargarProximasOrdenes, 5 * 60 * 1000);
 });
+
+//logout
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      window.location.href = "login.html";
+    })};

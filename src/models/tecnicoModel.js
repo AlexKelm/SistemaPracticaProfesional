@@ -1,11 +1,20 @@
 const { getConnection } = require("../config/db");
 
-// Obtener todos los técnicos
+// Obtener todos los técnicos con sus datos de persona
 async function getAll() {
   try {
     const conn = await getConnection();
-    const query = "SELECT id_tecnico, nombre, apellido, usuario, email, especialidad, telefono, activo, fecha_creacion FROM tecnico";
-    const [rows] = await conn.execute(query);
+    const [rows] = await conn.execute(
+      `SELECT 
+        t.id AS id_tecnico,
+        p.nombre,
+        p.apellido,
+        p.email,
+        p.telefono,
+        t.persona_id
+       FROM tecnico t
+       JOIN persona p ON t.persona_id = p.id`
+    );
     await conn.end();
     return rows;
   } catch (error) {
@@ -14,115 +23,94 @@ async function getAll() {
   }
 }
 
-// Obtener técnico por ID
+// Obtener técnico por ID con sus datos de persona
 async function getById(id) {
   const conn = await getConnection();
   const [rows] = await conn.execute(
-    "SELECT id_tecnico, nombre, apellido, usuario, email, especialidad, telefono, activo, fecha_creacion FROM tecnico WHERE id_tecnico = ?",
+    `SELECT 
+      t.id AS id_tecnico,
+      p.nombre,
+      p.apellido,
+      p.email,
+      p.telefono,
+      t.persona_id
+     FROM tecnico t
+     JOIN persona p ON t.persona_id = p.id
+     WHERE t.id = ?`,
     [id]
   );
   await conn.end();
   return rows[0];
 }
 
-// Crear técnico
+// Crear técnico (primero crea persona, luego técnico)
 async function create(data) {
   const conn = await getConnection();
   try {
-    const { nombre, apellido, usuario, password, email, especialidad, telefono, direccion } = data || {};
+    const { nombre, apellido, email, telefono } = data || {};
 
     // Validar obligatorios
-    if (!nombre || !apellido || !usuario || !password) {
-      throw new Error("Nombre, apellido, usuario y contraseña son obligatorios");
+    if (!nombre || !apellido) {
+      throw new Error("Nombre y apellido son obligatorios");
     }
 
-    // Verificar que el usuario no exista
-    const [existingUser] = await conn.execute(
-      "SELECT id_tecnico FROM tecnico WHERE usuario = ?",
-      [usuario]
+    // 1) Crear persona del técnico
+    const [personaResult] = await conn.execute(
+      `INSERT INTO persona (nombre, apellido, email, telefono) VALUES (?, ?, ?, ?)`,
+      [nombre, apellido, email ?? null, telefono ?? null]
     );
+    const persona_id = personaResult.insertId;
 
-    if (existingUser.length > 0) {
-      throw new Error("El usuario ya existe");
-    }
-
-    // Asegurar que no se envían undefined a MySQL
-    const valores = [
-      nombre,
-      apellido,
-      usuario,
-      password, // (en un futuro se debe hashear antes de guardar)
-      email ?? null,
-      especialidad ?? null,
-      telefono ?? null,
-      direccion ?? null
-    ];
-
+    // 2) Crear técnico
     await conn.execute(
-      `INSERT INTO tecnico (nombre, apellido, usuario, password, email, especialidad, telefono, direccion, activo)
-       VALUES (?, ?, ?, ?, ?, ?, ?, ?, TRUE)`,
-      valores
+      `INSERT INTO tecnico (persona_id) VALUES (?)`,
+      [persona_id]
     );
   } finally {
     await conn.end();
   }
 }
 
-// Actualizar técnico
+// Actualizar técnico (actualiza datos en persona)
 async function update(id, data) {
   const conn = await getConnection();
-  const { nombre, apellido, usuario, email, especialidad, telefono, direccion, activo } = data;
+  try {
+    const { nombre, apellido, email, telefono } = data;
 
-  // Verificar que el técnico existe
-  const [existingTecnico] = await conn.execute(
-    "SELECT id_tecnico FROM tecnico WHERE id_tecnico = ?",
-    [id]
-  );
+    // Obtener persona_id del técnico
+    const [tecnicoRows] = await conn.execute(`SELECT persona_id FROM tecnico WHERE id = ?`, [id]);
 
-  if (existingTecnico.length === 0) {
-    throw new Error("Técnico no encontrado");
-  }
-
-  // Si se está cambiando el usuario, verificar que no exista
-  if (usuario) {
-    const [existingUser] = await conn.execute(
-      "SELECT id_tecnico FROM tecnico WHERE usuario = ? AND id_tecnico != ?",
-      [usuario, id]
-    );
-
-    if (existingUser.length > 0) {
-      throw new Error("El usuario ya existe");
+    if (tecnicoRows.length === 0) {
+      throw new Error("Técnico no encontrado");
     }
+
+    const persona_id = tecnicoRows[0].persona_id;
+
+    // Actualizar datos de persona
+    const updates = [];
+    const valores = [];
+    if (nombre !== undefined) { updates.push('nombre = ?'); valores.push(nombre); }
+    if (apellido !== undefined) { updates.push('apellido = ?'); valores.push(apellido); }
+    if (email !== undefined) { updates.push('email = ?'); valores.push(email); }
+    if (telefono !== undefined) { updates.push('telefono = ?'); valores.push(telefono); }
+    
+    if (updates.length > 0) {
+      valores.push(persona_id);
+      const [result] = await conn.execute(`UPDATE persona SET ${updates.join(', ')} WHERE id = ?`, valores);
+      return result;
+    }
+
+    return { affectedRows: 0 };
+  } finally {
+    await conn.end();
   }
-
-  // Convertir undefined a null para evitar errores de MySQL
-  const valores = [
-    nombre ?? null,
-    apellido ?? null,
-    usuario ?? null,
-    email ?? null,
-    especialidad ?? null,
-    telefono ?? null,
-    direccion ?? null,
-    activo ?? null,
-    id
-  ];
-
-  const [result] = await conn.execute(
-    `UPDATE tecnico 
-     SET nombre = ?, apellido = ?, usuario = ?, email = ?, especialidad = ?, telefono = ?, direccion = ?, activo = ? 
-     WHERE id_tecnico = ?`,
-    valores
-  );
-  await conn.end();
-  return result;
 }
 
-// Eliminar técnico (marcar como inactivo)
+// Eliminar técnico
 async function remove(id) {
   const conn = await getConnection();
   const [result] = await conn.execute(
-    "UPDATE tecnico SET activo = FALSE WHERE id_tecnico = ?",
+    "DELETE FROM tecnico WHERE id = ?",
     [id]
   );
   await conn.end();
@@ -133,12 +121,11 @@ async function remove(id) {
 async function getOrdenesAsignadas(tecnicoId) {
   const conn = await getConnection();
   const [rows] = await conn.execute(
-    `SELECT o.*, c.razon_social, c.telefono, c.email
+    `SELECT o.*, c.razon_social, p.telefono, p.email
      FROM orden_servicio o
      JOIN cliente c ON o.cliente_id = c.id
-     WHERE o.tecnico_asignado = (
-       SELECT CONCAT(nombre, ' ', apellido) FROM tecnico WHERE id_tecnico = ?
-     )`,
+     JOIN persona p ON c.persona_id = p.id
+     WHERE o.tecnico_id = ?`,
     [tecnicoId]
   );
   await conn.end();
@@ -149,9 +136,9 @@ async function getOrdenesAsignadas(tecnicoId) {
 async function asignarOrden(ordenId, tecnicoId) {
   const conn = await getConnection();
   
-  // Obtener nombre completo del técnico
+  // Verificar que el técnico exista
   const [tecnico] = await conn.execute(
-    "SELECT CONCAT(nombre, ' ', apellido) as nombre_completo FROM tecnico WHERE id_tecnico = ?",
+    "SELECT id FROM tecnico WHERE id = ?",
     [tecnicoId]
   );
 
@@ -160,8 +147,8 @@ async function asignarOrden(ordenId, tecnicoId) {
   }
 
   const [result] = await conn.execute(
-    "UPDATE orden_servicio SET tecnico_asignado = ? WHERE id = ?",
-    [tecnico[0].nombre_completo, ordenId]
+    "UPDATE orden_servicio SET tecnico_id = ? WHERE id = ?",
+    [tecnicoId, ordenId]
   );
   await conn.end();
   return result;

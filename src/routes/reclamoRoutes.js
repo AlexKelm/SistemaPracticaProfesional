@@ -32,7 +32,7 @@ router.post("/", async (req, res) => {
     res.json({ message: "Reclamo creado correctamente" });
   } catch (err) {
     console.error("Error al crear reclamo:", err);
-    if (err.message === "cliente_id es obligatorio") {
+    if (err.message === "Detalles son obligatorios") {
       return res.status(400).json({ error: err.message });
     }
     res.status(500).json({ error: "Error al crear reclamo" });

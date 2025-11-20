@@ -87,24 +87,38 @@
               <select id="selectCliente" required></select>
             </div>
             <div class="form-group">
+              <label>Tipo de Servicio:</label>
+              <select id="selectTipoServicio" required></select>
+            </div>
+            <div class="form-group">
+              <label>Técnico Asignado:</label>
+              <select id="selectTecnico" required></select>
+            </div>
+            <div class="form-group">
               <label>Descripción / Observaciones:</label>
               <textarea id="inputObservacion"></textarea>
             </div>
             <div class="form-group">
               <label>Estado:</label>
               <select id="selectEstado">
-                <option value="Pendiente">Pendiente</option>
-                <option value="En Proceso">En Proceso</option>
-                <option value="Finalizada">Finalizada</option>
+                <option value="pendiente">Pendiente</option>
+                <option value="en_proceso">En Proceso</option>
+                <option value="completada">Completada</option>
+                <option value="cancelada">Cancelada</option>
               </select>
             </div>
             <div class="form-group">
               <label>Prioridad:</label>
               <select id="selectPrioridad">
-                <option value="Alta">Alta</option>
-                <option value="Media">Media</option>
-                <option value="Baja">Baja</option>
+                <option value="baja">Baja</option>
+                <option value="media">Media</option>
+                <option value="alta">Alta</option>
+                <option value="urgente">Urgente</option>
               </select>
+            </div>
+            <div class="form-group">
+              <label>Costo ($):</label>
+              <input type="number" id="inputCosto" step="0.01" min="0" value="0.00">
             </div>
             <div class="form-group">
               <label>Fecha Creación:</label>

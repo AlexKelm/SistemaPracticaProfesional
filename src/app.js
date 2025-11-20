@@ -9,6 +9,7 @@ const clienteRoutes = require("./routes/clienteRoutes");
 const ordenRoutes = require("./routes/ordenRoutes");
 const tecnicoRoutes = require("./routes/tecnicoRoutes");
 const reclamoRoutes = require("./routes/reclamoRoutes");
+const tipoServicioRoutes = require("./routes/tipoServicioRoutes");
 
 const app = express();
 
@@ -71,6 +72,7 @@ app.use("/api/clientes", clienteRoutes);
 app.use("/api/ordenes", ordenRoutes);
 app.use("/api/tecnicos", tecnicoRoutes);
 app.use("/api/reclamos", reclamoRoutes);
+app.use("/api/tipo-servicio", tipoServicioRoutes);
 
 // Ruta para servir archivos HTML (SPA fallback)
 app.use((req, res) => {

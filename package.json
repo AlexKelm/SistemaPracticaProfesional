@@ -10,6 +10,8 @@
     "coverage": "cross-env NODE_ENV=test jest --coverage --runInBand",
     "crear-usuario": "node src/scripts/crearUsuario.js",
     "crear-tecnicos": "node src/scripts/crearTecnicos.js",
+    "seed-data": "node src/scripts/seedData.js",
+    "check-data": "node src/scripts/checkData.js",
     "lint:audit": "npm audit --production || exit 0"
   },
   "keywords": ["sistema-gestion", "ordenes-servicio", "nodejs", "express", "mysql"],

@@ -32,8 +32,7 @@ router.post("/", async (req, res) => {
     res.json({ message: "Técnico creado correctamente" });
   } catch (err) {
     console.error("Error al crear técnico:", err);
-    if (err.message === "Nombre, apellido, usuario y contraseña son obligatorios" || 
-        err.message === "El usuario ya existe") {
+    if (err.message === "Nombre y apellido son obligatorios") {
       return res.status(400).json({ error: err.message });
     }
     res.status(500).json({ error: "Error al crear técnico" });

@@ -5,45 +5,89 @@ const API_BASE_URL = '';
 let tecnicos = [];
 let tecnicoEditando = null;
 
-// Elementos del DOM
-const tablaTecnicosBody = document.getElementById('tablaTecnicosBody');
-const buscadorTecnico = document.getElementById('buscadorTecnico');
-const btnAgregarTecnico = document.getElementById('btnAgregarTecnico');
-const modalTecnico = document.getElementById('modalTecnico');
-const modalOrdenes = document.getElementById('modalOrdenes');
-const formTecnico = document.getElementById('formTecnico');
-const modalTitulo = document.getElementById('modalTitulo');
-const modalTituloOrdenes = document.getElementById('modalTituloOrdenes');
-const estadoGroup = document.getElementById('estadoGroup');
-const ordenesTecnico = document.getElementById('ordenesTecnico');
+// Elementos del DOM (se inicializarán cuando el DOM esté listo)
+let tablaTecnicosBody;
+let buscadorTecnico;
+let btnAgregarTecnico;
+let modalTecnico;
+let modalOrdenes;
+let formTecnico;
+let modalTitulo;
+let modalTituloOrdenes;
+let estadoGroup;
+let ordenesTecnico;
 
 // Inicialización
 document.addEventListener('DOMContentLoaded', function() {
+    // Inicializar elementos del DOM
+    tablaTecnicosBody = document.getElementById('tablaTecnicosBody');
+    buscadorTecnico = document.getElementById('buscadorTecnico');
+    btnAgregarTecnico = document.getElementById('btnAgregarTecnico');
+    modalTecnico = document.getElementById('modalTecnico');
+    modalOrdenes = document.getElementById('modalOrdenes');
+    formTecnico = document.getElementById('formTecnico');
+    modalTitulo = document.getElementById('modalTitulo');
+    modalTituloOrdenes = document.getElementById('modalTituloOrdenes');
+    estadoGroup = document.getElementById('estadoGroup');
+    ordenesTecnico = document.getElementById('ordenesTecnico');
+    
+    // Verificar que todos los elementos existen
+    if (!tablaTecnicosBody || !btnAgregarTecnico || !modalTecnico || !formTecnico) {
+        console.error('❌ Error: No se encontraron algunos elementos del DOM');
+        console.log('tablaTecnicosBody:', tablaTecnicosBody);
+        console.log('btnAgregarTecnico:', btnAgregarTecnico);
+        console.log('modalTecnico:', modalTecnico);
+        console.log('formTecnico:', formTecnico);
+        return;
+    }
+    
+    console.log('✅ Elementos del DOM inicializados correctamente');
+    
     cargarTecnicos();
     configurarEventListeners();
 });
 
 // Configurar event listeners
 function configurarEventListeners() {
+    // Verificar elementos antes de agregar listeners
+    if (!btnAgregarTecnico) {
+        console.error('❌ btnAgregarTecnico no existe');
+        return;
+    }
+    
     // Botón agregar técnico
     btnAgregarTecnico.addEventListener('click', () => {
+        console.log('✅ Click en btnAgregarTecnico');
         abrirModalNuevo();
     });
 
     // Buscador
-    buscadorTecnico.addEventListener('input', filtrarTecnicos);
+    if (buscadorTecnico) {
+        buscadorTecnico.addEventListener('input', filtrarTecnicos);
+    }
 
     // Formulario técnico
-    formTecnico.addEventListener('submit', guardarTecnico);
+    if (formTecnico) {
+        formTecnico.addEventListener('submit', guardarTecnico);
+    }
 
     // Botones de cancelar
-    document.getElementById('cancelarTecnico').addEventListener('click', cerrarModalTecnico);
+    const btnCancelar = document.getElementById('cancelarTecnico');
+    if (btnCancelar) {
+        btnCancelar.addEventListener('click', cerrarModalTecnico);
+    }
+
+    // Botón cerrar (X) del modal de técnico
+    const btnCerrarModalTecnico = document.getElementById('btnCerrarModalTecnico');
+    if (btnCerrarModalTecnico) {
+        btnCerrarModalTecnico.addEventListener('click', cerrarModalTecnico);
+    }
 
     // Cerrar modales con X
     document.querySelectorAll('.close').forEach(closeBtn => {
         closeBtn.addEventListener('click', (e) => {
             const modal = e.target.closest('.modal');
-            modal.style.display = 'none';
+            if (modal) modal.style.display = 'none';
         });
     });
 
@@ -53,6 +97,8 @@ function configurarEventListeners() {
             e.target.style.display = 'none';
         }
     });
+    
+    console.log('✅ Event listeners configurados');
 }
 
 // Cargar técnicos desde la API
@@ -83,7 +129,7 @@ function mostrarTecnicos(tecnicosFiltrados) {
   tablaTecnicosBody.innerHTML = '';
   
   if (tecnicosFiltrados.length === 0) {
-    tablaTecnicosBody.innerHTML = '<tr><td colspan="8" class="text-center">No hay técnicos registrados</td></tr>';
+    tablaTecnicosBody.innerHTML = '<tr><td colspan="6" class="text-center">No hay técnicos registrados</td></tr>';
     return;
   }
   
@@ -91,18 +137,26 @@ function mostrarTecnicos(tecnicosFiltrados) {
     const fila = document.createElement('tr');
     fila.innerHTML = `
       <td>${tecnico.nombre} ${tecnico.apellido}</td>
-      <td>${tecnico.usuario}</td>
       <td>${tecnico.email || '-'}</td>
-      <td>${tecnico.especialidad || '-'}</td>
       <td>${tecnico.telefono || '-'}</td>
-      <td><span class="badge ${tecnico.activo ? 'badge-success' : 'badge-danger'}">${tecnico.activo ? 'Activo' : 'Inactivo'}</span></td>
+      <td>${tecnico.direccion || '-'}</td>
       <td>${formatearFecha(tecnico.fecha_creacion)}</td>
       <td class="acciones">
-        <button class="btn-small btn-primary" onclick="editarTecnico(${tecnico.id_tecnico})">Editar</button>
-        <button class="btn-small btn-danger" onclick="eliminarTecnico(${tecnico.id_tecnico})">Eliminar</button>
-        <button class="btn-small btn-secondary" onclick="verOrdenes(${tecnico.id_tecnico})">Ver Órdenes</button>
+        <button class="btn-small btn-primary" data-action="editar" data-id="${tecnico.id_tecnico}">Editar</button>
+        <button class="btn-small btn-danger" data-action="eliminar" data-id="${tecnico.id_tecnico}">Eliminar</button>
+        <button class="btn-small btn-secondary" data-action="ver-ordenes" data-id="${tecnico.id_tecnico}">Ver Órdenes</button>
       </td>
     `;
+    
+    // Agregar event listeners a los botones
+    const btnEditar = fila.querySelector('[data-action="editar"]');
+    const btnEliminar = fila.querySelector('[data-action="eliminar"]');
+    const btnVerOrdenes = fila.querySelector('[data-action="ver-ordenes"]');
+    
+    btnEditar.addEventListener('click', () => editarTecnico(tecnico.id_tecnico));
+    btnEliminar.addEventListener('click', () => eliminarTecnico(tecnico.id_tecnico));
+    btnVerOrdenes.addEventListener('click', () => verOrdenes(tecnico.id_tecnico));
+    
     tablaTecnicosBody.appendChild(fila);
   });
 }
@@ -113,43 +167,68 @@ function filtrarTecnicos() {
     const tecnicosFiltrados = tecnicos.filter(tecnico => 
         tecnico.nombre.toLowerCase().includes(termino) ||
         tecnico.apellido.toLowerCase().includes(termino) ||
-        tecnico.usuario.toLowerCase().includes(termino) ||
-        (tecnico.email && tecnico.email.toLowerCase().includes(termino))
+        (tecnico.email && tecnico.email.toLowerCase().includes(termino)) ||
+        (tecnico.telefono && tecnico.telefono.toLowerCase().includes(termino))
     );
     mostrarTecnicos(tecnicosFiltrados);
 }
 
 // Abrir modal para nuevo técnico
 function abrirModalNuevo() {
+    console.log('🔹 abrirModalNuevo() llamado');
+    console.log('modalTecnico:', modalTecnico);
+    console.log('modalTitulo:', modalTitulo);
+    console.log('formTecnico:', formTecnico);
+    
+    if (!modalTecnico) {
+        console.error('❌ modalTecnico no existe');
+        return;
+    }
+    
     tecnicoEditando = null;
-    modalTitulo.textContent = 'Nuevo Técnico';
-    formTecnico.reset();
-    estadoGroup.style.display = 'none';
-    document.getElementById('password').required = true;
-    modalTecnico.style.display = 'block';
+    if (modalTitulo) modalTitulo.textContent = 'Nuevo Técnico';
+    if (formTecnico) formTecnico.reset();
+    if (estadoGroup) estadoGroup.style.display = 'none';
+    modalTecnico.style.display = 'flex';
+    
+    console.log('✅ Modal abierto');
 }
 
 // Editar técnico
 function editarTecnico(id) {
+  console.log('🔹 editarTecnico() llamado con id:', id);
+  
   const tecnico = tecnicos.find(t => t.id_tecnico === id);
-  if (!tecnico) return;
+  if (!tecnico) {
+    console.error('❌ Técnico no encontrado con id:', id);
+    return;
+  }
+
+  console.log('✅ Técnico encontrado:', tecnico);
 
   tecnicoEditando = tecnico;
-  modalTitulo.textContent = 'Editar Técnico';
-  estadoGroup.style.display = 'block';
-  document.getElementById('password').required = false;
+  if (modalTitulo) modalTitulo.textContent = 'Editar Técnico';
+  if (estadoGroup) estadoGroup.style.display = 'none';
   
   // Llenar formulario
-  document.getElementById('nombre').value = tecnico.nombre;
-  document.getElementById('apellido').value = tecnico.apellido;
-  document.getElementById('usuario').value = tecnico.usuario;
-  document.getElementById('email').value = tecnico.email || '';
-  document.getElementById('especialidad').value = tecnico.especialidad || '';
-  document.getElementById('telefono').value = tecnico.telefono || '';
-  document.getElementById('direccion').value = tecnico.direccion || '';
-  document.getElementById('activo').value = tecnico.activo.toString();
+  const nombreInput = document.getElementById('nombre');
+  const apellidoInput = document.getElementById('apellido');
+  const emailInput = document.getElementById('email');
+  const telefonoInput = document.getElementById('telefono');
+  const direccionInput = document.getElementById('direccion');
   
-  modalTecnico.style.display = 'block';
+  if (nombreInput) nombreInput.value = tecnico.nombre;
+  if (apellidoInput) apellidoInput.value = tecnico.apellido;
+  if (emailInput) emailInput.value = tecnico.email || '';
+  if (telefonoInput) telefonoInput.value = tecnico.telefono || '';
+  if (direccionInput) direccionInput.value = tecnico.direccion || '';
+  
+  if (modalTecnico) {
+    modalTecnico.style.display = 'flex';
+    console.log('✅ Modal de edición abierto');
+  } else {
+    console.error('❌ modalTecnico no existe');
+  }
 }
 
 // Guardar técnico
@@ -158,11 +237,6 @@ async function guardarTecnico(e) {
     
     const formData = new FormData(formTecnico);
     const datos = Object.fromEntries(formData.entries());
-    
-    // Convertir activo a boolean
-    if (datos.activo) {
-        datos.activo = datos.activo === 'true';
-    }
 
     try {
       let response;
@@ -231,7 +305,7 @@ async function verOrdenes(id) {
     
     const ordenes = await response.json();
     mostrarOrdenes(ordenes);
-    modalOrdenes.style.display = 'block';
+    modalOrdenes.style.display = 'flex';
   } catch (error) {
     console.error('Error al cargar órdenes del técnico:', error);
     mostrarMensaje('Error al cargar órdenes del técnico', 'error');
@@ -304,3 +378,9 @@ function mostrarMensaje(mensaje, tipo) {
         mensajeDiv.remove();
     }, 3000);
 }
+
+//logout 
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      window.location.href = "login.html";
+    })};

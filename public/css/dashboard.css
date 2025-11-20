@@ -368,15 +368,91 @@
   color: #3b82f6;
   text-decoration: none;
   font-weight: 600;
-  font-size: 13px;
-  border: 2px solid #dbeafe;
-  border-radius: 8px;
-  transition: all 0.3s ease;
+  font-size: 14px;
+  transition: color 0.3s ease;
 }
 
 .ver-todas:hover {
-  background: #eff6ff;
-  border-color: #3b82f6;
+  color: #8b5cf6;
+}
+
+/* Lista de reclamos */
+.reclamos-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.reclamos-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.reclamos-list::-webkit-scrollbar-track {
+  background: #f3f4f6;
+  border-radius: 10px;
+}
+
+.reclamos-list::-webkit-scrollbar-thumb {
+  background: #d1d5db;
+  border-radius: 10px;
+}
+
+.reclamos-list::-webkit-scrollbar-thumb:hover {
+  background: #9ca3af;
+}
+
+.reclamos-list li {
+  padding: 15px;
+  margin-bottom: 12px;
+  background: #fef3c7;
+  border-left: 4px solid #f59e0b;
+  border-radius: 8px;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.reclamos-list li:hover {
+  background: #fde68a;
+  transform: translateX(5px);
+  border-left-color: #d97706;
+}
+
+.reclamos-list li.reclamo-clickeable {
+  cursor: pointer;
+}
+
+.reclamos-list li.reclamo-clickeable:hover {
+  box-shadow: var(--shadow-md);
+}
+
+.reclamo-fecha {
+  font-weight: 600;
+  color: #d97706;
+  font-size: 12px;
+  display: block;
+  margin-bottom: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.reclamo-detalle {
+  color: #78350f;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.no-reclamos {
+  padding: 20px;
+  text-align: center;
+  color: #9ca3af;
+  font-style: italic;
+  background: transparent !important;
+  border: none !important;
+}
+
+.no-reclamos:hover {
+  transform: none !important;
 }
 
 /* ============================

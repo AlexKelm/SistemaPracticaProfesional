@@ -56,11 +56,9 @@
             <thead>
               <tr>
                 <th>Nombre</th>
-                <th>Usuario</th>
                 <th>Email</th>
-                <th>Especialidad</th>
                 <th>Teléfono</th>
-                <th>Estado</th>
+                <th>Dirección</th>
                 <th>Fecha Creación</th>
                 <th>Acciones</th>
               </tr>
@@ -91,20 +89,8 @@
           <input type="text" id="apellido" name="apellido" required>
         </div>
         <div class="form-group">
-          <label for="usuario">Usuario:</label>
-          <input type="text" id="usuario" name="usuario" required>
-        </div>
-        <div class="form-group">
-          <label for="password">Contraseña:</label>
-          <input type="password" id="password" name="password" required>
-        </div>
-        <div class="form-group">
           <label for="email">Email:</label>
           <input type="email" id="email" name="email">
-        </div>
-        <div class="form-group">
-          <label for="especialidad">Especialidad:</label>
-          <input type="text" id="especialidad" name="especialidad">
         </div>
         <div class="form-group">
           <label for="telefono">Teléfono:</label>
@@ -113,13 +99,6 @@
         <div class="form-group">
           <label for="direccion">Dirección:</label>
           <textarea id="direccion" name="direccion" rows="3"></textarea>
-        </div>
-        <div class="form-group" id="estadoGroup" style="display: none;">
-          <label for="activo">Estado:</label>
-          <select id="activo" name="activo">
-            <option value="true">Activo</option>
-            <option value="false">Inactivo</option>
-          </select>
         </div>
         <div class="form-actions">
           <button type="button" class="btn-secondary" id="cancelarTecnico">Cancelar</button>

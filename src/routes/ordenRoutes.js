@@ -16,11 +16,28 @@ router.get("/", async (req, res) => {
 // Crear orden
 router.post("/", async (req, res) => {
   try {
+    console.log("📝 Datos recibidos para crear orden:", req.body);
     await ordenModel.create(req.body);
     res.json({ message: "Orden creada correctamente" });
   } catch (err) {
     console.error("❌ Error al crear orden:", err);
-    res.status(500).json({ error: "Error al crear orden" });
+    console.error("❌ Datos enviados:", req.body);
+    
+    // Mejor manejo de errores de FK
+    if (err.code === 'ER_NO_REFERENCED_ROW_2') {
+      if (err.message.includes('fk_orden_cliente')) {
+        return res.status(400).json({ 
+          error: "El cliente seleccionado no existe",
+          cliente_id_recibido: req.body.cliente_id 
+        });
+      }
+      if (err.message.includes('fk_orden_tecnico')) {
+        return res.status(400).json({ error: "El técnico seleccionado no existe" });
+      }
+      return res.status(400).json({ error: "Error de integridad referencial en la base de datos" });
+    }
+    
+    res.status(500).json({ error: err.message || "Error al crear orden" });
   }
 });
 

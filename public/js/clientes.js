@@ -22,13 +22,13 @@ function mostrarClientes(clientes) {
     fila.innerHTML = `
       <td>${cliente.razon_social}</td>
       <td>${cliente.cuit}</td>
-      <td>${cliente.telefono}</td>
-      <td>${cliente.email}</td>
-      <td>${cliente.referencia}</td>
+      <td>${cliente.telefono || '-'}</td>
+      <td>${cliente.email || '-'}</td>
+      <td>${cliente.referencias || '-'}</td>
       <td class="acciones">
-        <button class="btn-small btn-primary" onclick="editarCliente(${cliente.id})">Editar</button>
-        <button class="btn-small btn-danger" onclick="eliminarCliente(${cliente.id})">Eliminar</button>
-        <button class="btn-small btn-secondary" onclick="verDetalles(${cliente.id})">Ver Órdenes</button>
+        <button class="btn-small btn-primary" onclick="editarCliente(${cliente.id_cliente})">Editar</button>
+        <button class="btn-small btn-danger" onclick="eliminarCliente(${cliente.id_cliente})">Eliminar</button>
+        <button class="btn-small btn-secondary" onclick="verDetalles(${cliente.id_cliente})">Ver Órdenes</button>
       </td>
     `;
     tablaClientes.appendChild(fila);
@@ -43,7 +43,7 @@ function filtrarClientes() {
     (cliente.cuit && cliente.cuit.toLowerCase().includes(texto)) ||
     (cliente.telefono && cliente.telefono.toLowerCase().includes(texto)) ||
     (cliente.email && cliente.email.toLowerCase().includes(texto)) ||
-    (cliente.referencia && cliente.referencia.toLowerCase().includes(texto))
+    (cliente.referencias && cliente.referencias.toLowerCase().includes(texto))
   );
   mostrarClientes(filtrados);
 }
@@ -77,8 +77,12 @@ async function editarCliente(id) {
     document.getElementById("inputCuit").value = cliente.cuit || "";
     document.getElementById("inputTelefono").value = cliente.telefono || "";
     document.getElementById("inputMail").value = cliente.email || "";
-    document.getElementById("inputNombre").value = cliente.nombre_contacto || "";
-    document.getElementById("inputApellido").value = cliente.apellido_contacto || "";
+    
+    // La referencia ahora puede ser múltiple, solo mostramos la primera o dejamos vacío
+    const refArray = cliente.referencias ? cliente.referencias.split('; ') : [];
+    const primeraRef = refArray[0] ? refArray[0].split(' ') : [];
+    document.getElementById("inputNombre").value = primeraRef[0] || "";
+    document.getElementById("inputApellido").value = primeraRef[1] || "";
 
     modoEdicion = true;
     clienteEditandoId = id;
@@ -110,14 +114,14 @@ document.getElementById("formNuevoCliente").addEventListener("submit", async fun
       await fetch(`/api/clientes/${clienteEditandoId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ razon_social, cuit, telefono, email: mail, nombre_contacto: nombre, apellido_contacto: apellido })
+        body: JSON.stringify({ razon_social, cuit, telefono, email: mail, nombre_referencia: nombre, apellido_referencia: apellido })
       });
     } else {
       // Crear nuevo cliente
       await fetch("/api/clientes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ razon_social, cuit, telefono, email: mail, nombre_contacto: nombre, apellido_contacto: apellido })
+        body: JSON.stringify({ razon_social, cuit, telefono, email: mail, nombre_referencia: nombre, apellido_referencia: apellido })
       });
     }
     cerrarModalCliente();
@@ -132,6 +136,9 @@ document.getElementById("formNuevoCliente").addEventListener("submit", async fun
 
 // Botón cancelar
 document.getElementById("btnCancelarCliente").addEventListener("click", cerrarModalCliente);
+
+// Botón cerrar (X) del modal
+document.getElementById("btnCerrarModalCliente").addEventListener("click", cerrarModalCliente);
 
 // Reemplaza el prompt por el modal
 document.getElementById("btnAgregarCliente").addEventListener("click", mostrarModalNuevoCliente);
@@ -194,3 +201,9 @@ document.addEventListener("DOMContentLoaded", () => {
     buscador.addEventListener("input", filtrarClientes);
   }
 });
+
+//logout
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      window.location.href = "login.html";
+    })};

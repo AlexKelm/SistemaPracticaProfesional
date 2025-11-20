@@ -65,20 +65,103 @@ function filtrarOrdenes() {
 
 // Abrir modal (nuevo o edición) y cargar clientes
 async function abrirModal() {
-  document.getElementById("modalNuevaOrden").style.display = "block";
+  document.getElementById("modalNuevaOrden").style.display = "flex";
   const titulo = document.getElementById("modalTitulo");
   titulo.textContent = modoEdicion.activo ? "Editar Orden" : "Nueva Orden";
 
+  // Cargar clientes
   const selectCliente = document.getElementById("selectCliente");
   selectCliente.innerHTML = "";
   const clientesResp = await fetch("/api/clientes");
   const clientes = await clientesResp.json();
+  
+  if (clientes.length === 0) {
+    selectCliente.innerHTML = "<option value=''>No hay clientes disponibles</option>";
+    console.warn("⚠️ No hay clientes en la base de datos");
+    return;
+  }
+  
   clientes.forEach(c => {
     const option = document.createElement("option");
-    option.value = c.id;
+    const clienteId = c.id_cliente || c.id;
+    if (!clienteId) {
+      console.error("❌ Cliente sin ID:", c);
+      return;
+    }
+    option.value = clienteId;
     option.textContent = c.razon_social;
     selectCliente.appendChild(option);
   });
+  
+  // Cargar tipos de servicio
+  const selectTipoServicio = document.getElementById("selectTipoServicio");
+  selectTipoServicio.innerHTML = "";
+  
+  try {
+    console.log("🔄 Cargando tipos de servicio...");
+    const tiposResp = await fetch("/api/tipo-servicio");
+    console.log("📡 Response tipos de servicio:", tiposResp.status);
+    
+    if (!tiposResp.ok) {
+      console.error("❌ Error al cargar tipos de servicio:", tiposResp.status);
+      selectTipoServicio.innerHTML = "<option value=''>Error al cargar tipos de servicio</option>";
+    } else {
+      const tipos = await tiposResp.json();
+      console.log("✅ Tipos de servicio cargados:", tipos);
+      
+      if (tipos.length === 0) {
+        selectTipoServicio.innerHTML = "<option value=''>No hay tipos de servicio disponibles</option>";
+      } else {
+        tipos.forEach(t => {
+          console.log("Procesando tipo:", t); // Debug
+          const option = document.createElement("option");
+          option.value = t.id;
+          const texto = t.detalle || t.nombre;
+          console.log(`ID: ${t.id}, Texto: ${texto}`); // Debug
+          option.textContent = texto;
+          selectTipoServicio.appendChild(option);
+        });
+      }
+    }
+  } catch (error) {
+    console.error("❌ Error al cargar tipos de servicio:", error);
+    selectTipoServicio.innerHTML = "<option value=''>Error al cargar tipos de servicio</option>";
+  }
+  
+  // Cargar técnicos
+  const selectTecnico = document.getElementById("selectTecnico");
+  selectTecnico.innerHTML = "";
+  
+  try {
+    console.log("🔄 Cargando técnicos...");
+    const tecnicosResp = await fetch("/api/tecnicos");
+    console.log("📡 Response técnicos:", tecnicosResp.status);
+    
+    if (!tecnicosResp.ok) {
+      console.error("❌ Error al cargar técnicos:", tecnicosResp.status);
+      selectTecnico.innerHTML = "<option value=''>Error al cargar técnicos</option>";
+    } else {
+      const tecnicos = await tecnicosResp.json();
+      console.log("✅ Técnicos cargados:", tecnicos);
+      
+      if (tecnicos.length === 0) {
+        selectTecnico.innerHTML = "<option value=''>No hay técnicos disponibles</option>";
+      } else {
+        tecnicos.forEach(t => {
+          const option = document.createElement("option");
+          const tecnicoId = t.id_tecnico || t.id;
+          option.value = tecnicoId;
+          option.textContent = `${t.nombre} ${t.apellido}`;
+          selectTecnico.appendChild(option);
+        });
+      }
+    }
+  } catch (error) {
+    console.error("❌ Error al cargar técnicos:", error);
+    selectTecnico.innerHTML = "<option value=''>Error al cargar técnicos</option>";
+  }
+  
+  console.log(`✅ Datos cargados en modal de órdenes`);
 }
 
 // Mostrar modal de nueva orden (reset y abrir)
@@ -98,28 +181,60 @@ function cerrarModal() {
 // Guardar orden (creación o edición)
 document.getElementById("formNuevaOrden").addEventListener("submit", async function(e) {
   e.preventDefault();
-  const id_cliente = document.getElementById("selectCliente").value;
+  const cliente_id = document.getElementById("selectCliente").value;
+  const tipo_servicio_id = document.getElementById("selectTipoServicio").value;
+  const tecnico_id = document.getElementById("selectTecnico").value;
   const observacion = document.getElementById("inputObservacion").value;
   const estado = document.getElementById("selectEstado").value;
   const prioridad = document.getElementById("selectPrioridad").value;
+  const costo = document.getElementById("inputCosto").value;
   const fecha_creacion = document.getElementById("inputFechaCreacion").value;
   const fecha_servicio = document.getElementById("inputFechaServicio").value || null;
+
+  // Validación del cliente
+  if (!cliente_id || cliente_id === '' || cliente_id === 'undefined') {
+    alert("Por favor selecciona un cliente válido");
+    console.error("❌ ID de cliente inválido:", cliente_id);
+    return;
+  }
+
+  console.log("📝 Enviando orden:", { 
+    cliente_id, 
+    tipo_servicio_id, 
+    tecnico_id, 
+    observacion, 
+    estado, 
+    prioridad, 
+    costo,
+    fecha_creacion, 
+    fecha_servicio 
+  });
 
   try {
     const url = modoEdicion.activo ? `/api/ordenes/${modoEdicion.id}` : "/api/ordenes";
     const method = modoEdicion.activo ? "PUT" : "POST";
-    await fetch(url, {
+    const response = await fetch(url, {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
-        cliente_id: id_cliente,
+        cliente_id,
+        tipo_servicio_id,
+        tecnico_id,
         observacion,
         estado,
         prioridad,
+        costo,
         fecha_creacion,
         fecha_servicio
       })
     });
+    
+    const data = await response.json();
+    
+    if (!response.ok) {
+      throw new Error(data.error || "Error al guardar orden");
+    }
+    
     cerrarModal();
     cargarOrdenes();
   } catch (err) {
@@ -129,6 +244,9 @@ document.getElementById("formNuevaOrden").addEventListener("submit", async funct
 
 // Botón cancelar
 document.getElementById("btnCancelarModal").addEventListener("click", cerrarModal);
+
+// Botón cerrar (X) del modal
+document.getElementById("btnCerrarModalOrden").addEventListener("click", cerrarModal);
 
 async function editarOrden(id) {
   try {
@@ -141,8 +259,11 @@ async function editarOrden(id) {
 
     document.getElementById("selectCliente").value = orden.cliente_id;
     document.getElementById("inputObservacion").value = orden.observacion || "";
-    document.getElementById("selectEstado").value = orden.estado || "Pendiente";
-    document.getElementById("selectPrioridad").value = orden.prioridad || "Media";
+    // Convertir estado de vuelta a formato de select (capitalizado)
+    const estadoCapitalizado = orden.estado ? orden.estado.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase()) : "Pendiente";
+    const prioridadCapitalizada = orden.prioridad ? orden.prioridad.charAt(0).toUpperCase() + orden.prioridad.slice(1) : "Media";
+    document.getElementById("selectEstado").value = estadoCapitalizado;
+    document.getElementById("selectPrioridad").value = prioridadCapitalizada;
     // input type=date espera formato YYYY-MM-DD
     const toDateInput = (iso) => iso ? new Date(iso).toISOString().slice(0,10) : "";
     document.getElementById("inputFechaCreacion").value = toDateInput(orden.fecha_creacion);
@@ -179,7 +300,7 @@ async function verOrden(id) {
         <li><strong>Fecha servicio:</strong> ${formatearFecha(orden.fecha_servicio)}</li>
       </ul>
     `;
-    document.getElementById("modalVerOrden").style.display = "block";
+    document.getElementById("modalVerOrden").style.display = "flex";
   } catch (err) {
     console.error("Error al ver orden:", err);
   }
@@ -204,3 +325,9 @@ document.addEventListener("DOMContentLoaded", () => {
     });
   }
 });
+
+//logout
+if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      window.location.href = "login.html";
+    })};
