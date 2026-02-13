@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const ordenModel = require("../models/ordenModel");
+const logger = require("../config/logger");
 
 // Obtener todas las órdenes
 router.get("/", async (req, res) => {
@@ -8,7 +9,11 @@ router.get("/", async (req, res) => {
     const ordenes = await ordenModel.getAll();
     res.json(ordenes);
   } catch (err) {
-    console.error("❌ Error al obtener órdenes:", err);
+    logger.error({ 
+      error: err.message, 
+      stack: err.stack,
+      user: req.user ? { id: req.user.id, username: req.user.username } : undefined 
+    }, "Error al obtener órdenes");
     res.status(500).json({ error: "Error al obtener órdenes" });
   }
 });
@@ -16,12 +21,14 @@ router.get("/", async (req, res) => {
 // Crear orden
 router.post("/", async (req, res) => {
   try {
-    console.log("📝 Datos recibidos para crear orden:", req.body);
     await ordenModel.create(req.body);
     res.json({ message: "Orden creada correctamente" });
   } catch (err) {
-    console.error("❌ Error al crear orden:", err);
-    console.error("❌ Datos enviados:", req.body);
+    logger.error({ 
+      error: err.message, 
+      data: req.body, 
+      user: req.user ? { id: req.user.id, username: req.user.username } : undefined 
+    }, "Error al crear orden");
     
     // Mejor manejo de errores de FK
     if (err.code === 'ER_NO_REFERENCED_ROW_2') {
@@ -50,7 +57,7 @@ router.put("/:id", async (req, res) => {
     }
     res.json({ message: "Orden actualizada correctamente" });
   } catch (err) {
-    console.error("❌ Error al actualizar orden:", err);
+    logger.error({ error: err.message }, "Error al actualizar orden");
     res.status(500).json({ error: "Error al actualizar orden" });
   }
 });
@@ -64,7 +71,7 @@ router.delete("/:id", async (req, res) => {
     }
     res.json({ message: "Orden eliminada correctamente" });
   } catch (err) {
-    console.error("❌ Error al eliminar orden:", err);
+    logger.error({ error: err.message }, "Error al eliminar orden");
     res.status(500).json({ error: "Error al eliminar orden" });
   }
 });
@@ -87,7 +94,7 @@ router.get("/:id", async (req, res) => {
     if (!orden) return res.status(404).json({ error: "Orden no encontrada" });
     res.json(orden);
   } catch (err) {
-    console.error("❌ Error al obtener orden:", err);
+    logger.error({ error: err.message }, "Error al obtener orden" );
     res.status(500).json({ error: "Error al obtener orden" });
   }
 });

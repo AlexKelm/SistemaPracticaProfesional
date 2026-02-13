@@ -1,4 +1,5 @@
 const { getConnection } = require("../config/db");
+const logger = require("../config/logger");
 
 // Obtener todos los técnicos con sus datos de persona
 async function getAll() {
@@ -15,10 +16,9 @@ async function getAll() {
        FROM tecnico t
        JOIN persona p ON t.persona_id = p.id`
     );
-    await conn.end();
     return rows;
   } catch (error) {
-    console.error('❌ [tecnicoModel] Error en getAll():', error);
+    logger.error({ error: error.message }, "[tecnicoModel] Error en getAll()");
     throw error;
   }
 }
@@ -39,7 +39,6 @@ async function getById(id) {
      WHERE t.id = ?`,
     [id]
   );
-  await conn.end();
   return rows[0];
 }
 
@@ -66,8 +65,8 @@ async function create(data) {
       `INSERT INTO tecnico (persona_id) VALUES (?)`,
       [persona_id]
     );
-  } finally {
-    await conn.end();
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -101,20 +100,44 @@ async function update(id, data) {
     }
 
     return { affectedRows: 0 };
-  } finally {
-    await conn.end();
+  } catch (error) {
+    throw error;
   }
 }
 
-// Eliminar técnico
+// Eliminar técnico (primero obtiene persona_id, luego elimina técnico y persona)
 async function remove(id) {
   const conn = await getConnection();
-  const [result] = await conn.execute(
-    "DELETE FROM tecnico WHERE id = ?",
-    [id]
-  );
-  await conn.end();
-  return result;
+  try {
+    logger.debug({ tecnicoId: id, type: typeof id }, "Intentando eliminar técnico");
+    
+    // 1) Obtener persona_id antes de eliminar
+    const [tecnicoRows] = await conn.execute(
+      "SELECT persona_id FROM tecnico WHERE id = ?",
+      [id]
+    );
+    
+    logger.debug({ result: tecnicoRows }, "Resultado de búsqueda técnico");
+    
+    if (!tecnicoRows.length) {
+      throw new Error("Técnico no encontrado");
+    }
+    
+    const persona_id = tecnicoRows[0].persona_id;
+    logger.debug({ persona_id }, "Técnico encontrado");
+    
+    // 2) Eliminar técnico (esto elimina en cascada referencias si las hay)
+    await conn.execute("DELETE FROM tecnico WHERE id = ?", [id]);
+    logger.debug("Técnico eliminado");
+    
+    // 3) Eliminar persona asociada
+    const [result] = await conn.execute("DELETE FROM persona WHERE id = ?", [persona_id]);
+    logger.debug("Persona eliminada");
+    
+    return result;
+  } catch (error) {
+    throw error;
+  }
 }
 
 // Obtener órdenes asignadas a un técnico
@@ -128,7 +151,6 @@ async function getOrdenesAsignadas(tecnicoId) {
      WHERE o.tecnico_id = ?`,
     [tecnicoId]
   );
-  await conn.end();
   return rows;
 }
 
@@ -150,7 +172,6 @@ async function asignarOrden(ordenId, tecnicoId) {
     "UPDATE orden_servicio SET tecnico_id = ? WHERE id = ?",
     [tecnicoId, ordenId]
   );
-  await conn.end();
   return result;
 }
 

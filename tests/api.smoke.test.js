@@ -89,12 +89,11 @@ describe('SMOKE API', () => {
     expect(Array.isArray(res.body)).toBe(true);
   });
 
-  test('POST /api/reclamos crea reclamo (si hay cliente)', async () => {
+  test('POST /api/reclamos crea reclamo', async () => {
     if (!DB_AVAILABLE) return;
-    if (!createdClienteId) return; // si no hay cliente, se salta
     const res = await request(app)
       .post('/api/reclamos')
-      .send({ cliente_id: createdClienteId, descripcion: 'Reclamo Smoke' });
+      .send({ detalles: 'Reclamo Smoke', fecha: '2025-11-20' });
     expect([200,400]).toContain(res.status); // 400 si validación falla
     if (res.status === 200) createdReclamoId = true;
   });

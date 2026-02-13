@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const tipoServicioModel = require("../models/tipoServicioModel");
+const logger = require("../config/logger");
 
 // GET todos los tipos de servicio
 router.get("/", async (req, res) => {
@@ -8,7 +9,7 @@ router.get("/", async (req, res) => {
     const tipos = await tipoServicioModel.getAll();
     res.json(tipos);
   } catch (err) {
-    console.error("Error al obtener tipos de servicio:", err);
+    logger.error({ error: err.message }, "Error al obtener tipos de servicio");
     res.status(500).json({ error: "Error al obtener tipos de servicio" });
   }
 });
@@ -20,7 +21,7 @@ router.get("/:id", async (req, res) => {
     if (!tipo) return res.status(404).json({ error: "Tipo de servicio no encontrado" });
     res.json(tipo);
   } catch (err) {
-    console.error("Error al obtener tipo de servicio:", err);
+    logger.error({ error: err.message }, "Error al obtener tipo de servicio");
     res.status(500).json({ error: "Error al obtener tipo de servicio" });
   }
 });
@@ -48,7 +49,7 @@ router.put("/:id", async (req, res) => {
     }
     res.json({ message: "Tipo de servicio actualizado correctamente" });
   } catch (err) {
-    console.error("Error al actualizar tipo de servicio:", err);
+    logger.error({ error: err.message }, "Error al actualizar tipo de servicio");
     res.status(500).json({ error: "Error al actualizar tipo de servicio" });
   }
 });
@@ -62,7 +63,7 @@ router.delete("/:id", async (req, res) => {
     }
     res.json({ message: "Tipo de servicio eliminado correctamente" });
   } catch (err) {
-    console.error("Error al eliminar tipo de servicio:", err);
+    logger.error({ error: err.message }, "Error al eliminar tipo de servicio");
     res.status(500).json({ error: "Error al eliminar tipo de servicio" });
   }
 });

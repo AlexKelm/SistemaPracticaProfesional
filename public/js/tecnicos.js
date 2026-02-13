@@ -83,6 +83,14 @@ function configurarEventListeners() {
         btnCerrarModalTecnico.addEventListener('click', cerrarModalTecnico);
     }
 
+    // Botón cerrar (X) del modal de órdenes
+    const btnCerrarModalOrdenes = document.getElementById('btnCerrarModalOrdenes');
+    if (btnCerrarModalOrdenes) {
+        btnCerrarModalOrdenes.addEventListener('click', () => {
+            if (modalOrdenes) modalOrdenes.style.display = 'none';
+        });
+    }
+
     // Cerrar modales con X
     document.querySelectorAll('.close').forEach(closeBtn => {
         closeBtn.addEventListener('click', (e) => {
@@ -104,7 +112,7 @@ function configurarEventListeners() {
 // Cargar técnicos desde la API
 async function cargarTecnicos() {
   try {
-    const response = await fetch(`${API_BASE_URL}/api/tecnicos`);
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/tecnicos`);
     
     if (!response.ok) {
       throw new Error(`Error ${response.status}: ${response.statusText}`);
@@ -139,7 +147,6 @@ function mostrarTecnicos(tecnicosFiltrados) {
       <td>${tecnico.nombre} ${tecnico.apellido}</td>
       <td>${tecnico.email || '-'}</td>
       <td>${tecnico.telefono || '-'}</td>
-      <td>${tecnico.direccion || '-'}</td>
       <td>${formatearFecha(tecnico.fecha_creacion)}</td>
       <td class="acciones">
         <button class="btn-small btn-primary" data-action="editar" data-id="${tecnico.id_tecnico}">Editar</button>
@@ -215,13 +222,11 @@ function editarTecnico(id) {
   const apellidoInput = document.getElementById('apellido');
   const emailInput = document.getElementById('email');
   const telefonoInput = document.getElementById('telefono');
-  const direccionInput = document.getElementById('direccion');
   
   if (nombreInput) nombreInput.value = tecnico.nombre;
   if (apellidoInput) apellidoInput.value = tecnico.apellido;
   if (emailInput) emailInput.value = tecnico.email || '';
   if (telefonoInput) telefonoInput.value = tecnico.telefono || '';
-  if (direccionInput) direccionInput.value = tecnico.direccion || '';
   
   if (modalTecnico) {
     modalTecnico.style.display = 'flex';
@@ -242,14 +247,14 @@ async function guardarTecnico(e) {
       let response;
       if (tecnicoEditando) {
         // Actualizar
-        response = await fetch(`${API_BASE_URL}/api/tecnicos/${tecnicoEditando.id_tecnico}`, {
+        response = await fetchWithAuth(`${API_BASE_URL}/api/tecnicos/${tecnicoEditando.id_tecnico}`, {
           method: 'PUT',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(datos)
         });
       } else {
         // Crear
-        response = await fetch(`${API_BASE_URL}/api/tecnicos`, {
+        response = await fetchWithAuth(`${API_BASE_URL}/api/tecnicos`, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(datos)
@@ -275,7 +280,7 @@ async function eliminarTecnico(id) {
   if (!confirm('¿Estás seguro de que quieres eliminar este técnico?')) return;
 
   try {
-    const response = await fetch(`${API_BASE_URL}/api/tecnicos/${id}`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/tecnicos/${id}`, {
       method: 'DELETE'
     });
 
@@ -300,7 +305,7 @@ async function verOrdenes(id) {
   modalTituloOrdenes.textContent = `Órdenes de ${tecnico.nombre} ${tecnico.apellido}`;
   
   try {
-    const response = await fetch(`${API_BASE_URL}/api/tecnicos/${id}/ordenes`);
+    const response = await fetchWithAuth(`${API_BASE_URL}/api/tecnicos/${id}/ordenes`);
     if (!response.ok) throw new Error('Error al cargar órdenes');
     
     const ordenes = await response.json();
@@ -339,7 +344,7 @@ function mostrarOrdenes(ordenes) {
                 <tr>
                     <td>${orden.id}</td>
                     <td>${orden.razon_social}</td>
-                    <td>${orden.descripcion || '-'}</td>
+                    <td>${orden.observacion || '-'}</td>
                     <td><span class="badge badge-${orden.estado}">${orden.estado}</span></td>
                     <td><span class="badge badge-${orden.prioridad}">${orden.prioridad}</span></td>
                     <td>${orden.fecha_servicio ? formatearFecha(orden.fecha_servicio) : '-'}</td>
@@ -382,5 +387,5 @@ function mostrarMensaje(mensaje, tipo) {
 //logout 
 if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
-      window.location.href = "login.html";
+      logout();
     })};

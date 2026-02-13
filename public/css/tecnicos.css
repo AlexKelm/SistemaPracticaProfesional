@@ -315,6 +315,148 @@
   padding-top: 16px;
 }
 
+/* =========================
+   MODAL DE ÓRDENES
+   ========================= */
+
+#modalOrdenes .modal-content {
+  max-width: 900px;
+  width: 95%;
+}
+
+#ordenesTecnico {
+  padding: 24px;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+/* Tabla de órdenes dentro del modal */
+.ordenes-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+  background: white;
+}
+
+.ordenes-table thead {
+  background: linear-gradient(135deg, #1f2937 0%, #111827 100%);
+  color: white;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.ordenes-table th {
+  padding: 10px 8px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 11px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.ordenes-table td {
+  padding: 10px 8px;
+  border-bottom: 1px solid #e5e7eb;
+  color: #374151;
+  vertical-align: top;
+}
+
+.ordenes-table tbody tr:hover {
+  background: #f9fafb;
+}
+
+/* Ajustar ancho de columnas */
+.ordenes-table th:nth-child(1),
+.ordenes-table td:nth-child(1) {
+  width: 50px;
+  text-align: center;
+}
+
+.ordenes-table th:nth-child(2),
+.ordenes-table td:nth-child(2) {
+  width: 150px;
+  max-width: 150px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.ordenes-table th:nth-child(3),
+.ordenes-table td:nth-child(3) {
+  width: auto;
+  min-width: 120px;
+  max-width: 250px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.ordenes-table th:nth-child(4),
+.ordenes-table td:nth-child(4) {
+  width: 100px;
+  text-align: center;
+}
+
+.ordenes-table th:nth-child(5),
+.ordenes-table td:nth-child(5) {
+  width: 100px;
+  text-align: center;
+}
+
+.ordenes-table th:nth-child(6),
+.ordenes-table td:nth-child(6) {
+  width: 110px;
+  text-align: center;
+}
+
+/* Badges en tabla de órdenes */
+.ordenes-table .badge {
+  display: inline-block;
+  padding: 4px 10px;
+  border-radius: 12px;
+  font-size: 10px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  white-space: nowrap;
+}
+
+.badge-pendiente {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-en_proceso {
+  background: #dbeafe;
+  color: #1e40af;
+}
+
+.badge-completada {
+  background: #d1fae5;
+  color: #065f46;
+}
+
+.badge-cancelada {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.badge-alta {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+.badge-media {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.badge-baja {
+  background: #e0e7ff;
+  color: #3730a3;
+}
+
 /* Responsive - Pantallas pequeñas */
 @media (max-width: 1024px) {
   .tecnicos-table th,
@@ -362,5 +504,35 @@
     width: 100%;
     padding: 8px 4px;
     font-size: 10px;
+  }
+
+  /* Modal de órdenes en móvil */
+  #modalOrdenes .modal-content {
+    max-width: 100%;
+    width: 100%;
+    max-height: 100%;
+    border-radius: 0;
+  }
+
+  #ordenesTecnico {
+    padding: 16px;
+    max-height: calc(100vh - 120px);
+  }
+
+  .ordenes-table {
+    font-size: 11px;
+    display: block;
+    overflow-x: auto;
+  }
+
+  .ordenes-table th,
+  .ordenes-table td {
+    padding: 8px 6px;
+    font-size: 11px;
+  }
+
+  .ordenes-table .badge {
+    font-size: 9px;
+    padding: 3px 8px;
   }
 }

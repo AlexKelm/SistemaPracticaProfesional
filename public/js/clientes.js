@@ -5,7 +5,7 @@ let clientesGlobal = []; // Guardar todos los clientes
 // 🔹 Cargar clientes en la tabla
 async function cargarClientes() {
   try {
-    const response = await fetch("/api/clientes");
+    const response = await fetchWithAuth("/api/clientes");
     const clientes = await response.json();
     clientesGlobal = clientes; // Guardar para filtrar
     mostrarClientes(clientes);
@@ -26,9 +26,9 @@ function mostrarClientes(clientes) {
       <td>${cliente.email || '-'}</td>
       <td>${cliente.referencias || '-'}</td>
       <td class="acciones">
-        <button class="btn-small btn-primary" onclick="editarCliente(${cliente.id_cliente})">Editar</button>
-        <button class="btn-small btn-danger" onclick="eliminarCliente(${cliente.id_cliente})">Eliminar</button>
-        <button class="btn-small btn-secondary" onclick="verDetalles(${cliente.id_cliente})">Ver Órdenes</button>
+        <button class="btn-small btn-primary" onclick="editarCliente(${cliente.id})">Editar</button>
+        <button class="btn-small btn-danger" onclick="eliminarCliente(${cliente.id})">Eliminar</button>
+        <button class="btn-small btn-secondary" onclick="verDetalles(${cliente.id})">Ver Órdenes</button>
       </td>
     `;
     tablaClientes.appendChild(fila);
@@ -50,6 +50,7 @@ function filtrarClientes() {
 
 // Mostrar modal de nuevo cliente
 function mostrarModalNuevoCliente() {
+  document.getElementById("tituloModalCliente").textContent = "Nuevo Cliente";
   document.getElementById("modalNuevoCliente").style.display = "flex";
 }
 
@@ -69,7 +70,7 @@ let clienteEditandoId = null;
 // Mostrar modal para editar cliente
 async function editarCliente(id) {
   try {
-    const response = await fetch(`/api/clientes/${id}`);
+    const response = await fetchWithAuth(`/api/clientes/${id}`);
     const cliente = await response.json();
 
     // Rellenar el formulario con los datos del cliente
@@ -87,6 +88,7 @@ async function editarCliente(id) {
     modoEdicion = true;
     clienteEditandoId = id;
 
+    document.getElementById("tituloModalCliente").textContent = "Editar Cliente";
     document.getElementById("modalNuevoCliente").style.display = "flex";
   } catch (err) {
     console.error("Error al editar cliente:", err);
@@ -111,17 +113,17 @@ document.getElementById("formNuevoCliente").addEventListener("submit", async fun
   try {
     if (modoEdicion && clienteEditandoId) {
       // Editar cliente existente
-      await fetch(`/api/clientes/${clienteEditandoId}`, {
+      await fetchWithAuth(`/api/clientes/${clienteEditandoId}`, {
         method: "PUT",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ razon_social, cuit, telefono, email: mail, nombre_referencia: nombre, apellido_referencia: apellido })
+        body: JSON.stringify({ razon_social, cuit, telefono, email: mail, nombre, apellido })
       });
     } else {
       // Crear nuevo cliente
-      await fetch("/api/clientes", {
+      await fetchWithAuth("/api/clientes", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ razon_social, cuit, telefono, email: mail, nombre_referencia: nombre, apellido_referencia: apellido })
+        body: JSON.stringify({ razon_social, cuit, telefono, email: mail, nombre, apellido })
       });
     }
     cerrarModalCliente();
@@ -146,11 +148,11 @@ document.getElementById("btnAgregarCliente").addEventListener("click", mostrarMo
 // 🔹 Ver detalles de un cliente
 async function verDetalles(id) {
   // Mostrar datos del cliente como antes
-  const clienteResp = await fetch(`/api/clientes/${id}`);
+  const clienteResp = await fetchWithAuth(`/api/clientes/${id}`);
   const cliente = await clienteResp.json();
 
   // Obtener las órdenes del cliente
-  const ordenesResp = await fetch(`/api/ordenes`);
+  const ordenesResp = await fetchWithAuth(`/api/ordenes`);
   const ordenes = await ordenesResp.json();
   const ordenesCliente = ordenes.filter(o => o.cliente_id == id);
 
@@ -184,7 +186,7 @@ document.getElementById("btnCerrarOrdenesCliente").addEventListener("click", fun
 async function eliminarCliente(id) {
   if (!confirm("¿Seguro que quieres eliminar este cliente?")) return;
   try {
-    await fetch(`/api/clientes/${id}`, { method: "DELETE" });
+    await fetchWithAuth(`/api/clientes/${id}`, { method: "DELETE" });
     cargarClientes();
   } catch (err) {
     console.error("Error al eliminar cliente:", err);
@@ -205,5 +207,5 @@ document.addEventListener("DOMContentLoaded", () => {
 //logout
 if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
-      window.location.href = "login.html";
+      logout();
     })};

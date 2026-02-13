@@ -4,7 +4,6 @@ const { getConnection } = require("../config/db");
 async function getAll() {
   const conn = await getConnection();
   const [rows] = await conn.execute("SELECT * FROM tipo_servicio");
-  await conn.end();
   return rows;
 }
 
@@ -12,7 +11,6 @@ async function getAll() {
 async function getById(id) {
   const conn = await getConnection();
   const [rows] = await conn.execute("SELECT * FROM tipo_servicio WHERE id = ?", [id]);
-  await conn.end();
   return rows[0];
 }
 
@@ -27,7 +25,6 @@ async function create(tipoServicio) {
     "INSERT INTO tipo_servicio (nombre, descripcion) VALUES (?, ?)",
     [nombre, descripcion || null]
   );
-  await conn.end();
   return result;
 }
 
@@ -39,7 +36,6 @@ async function update(id, tipoServicio) {
     "UPDATE tipo_servicio SET nombre = ?, descripcion = ? WHERE id = ?",
     [nombre, descripcion || null, id]
   );
-  await conn.end();
   return result;
 }
 
@@ -47,7 +43,6 @@ async function update(id, tipoServicio) {
 async function remove(id) {
   const conn = await getConnection();
   const [result] = await conn.execute("DELETE FROM tipo_servicio WHERE id = ?", [id]);
-  await conn.end();
   return result;
 }
 

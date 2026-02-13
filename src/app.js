@@ -3,6 +3,12 @@ const bcrypt = require("bcrypt");
 const cors = require("cors");
 const path = require("path");
 const { getConnection } = require("./config/db");
+const logger = require("./config/logger");
+const requestLogger = require("./middleware/requestlogger");
+require('dotenv').config();
+
+// Importar rutas de auth
+const authRoutes = require("./routes/authroutes");
 
 // Rutas
 const clienteRoutes = require("./routes/clienteRoutes");
@@ -14,8 +20,9 @@ const tipoServicioRoutes = require("./routes/tipoServicioRoutes");
 const app = express();
 
 // Middleware
-app.use(express.json());
+app.use(express.json({ limit: '10mb' }));
 app.use(cors());
+app.use(requestLogger);  // ← AGREGAR (después de cors, antes de rutas)
 
 // Servir archivos estáticos desde la carpeta public
 app.use(express.static(path.join(__dirname, "../public")));
@@ -32,25 +39,20 @@ app.post("/login", async (req, res) => {
     );
 
     if (rows.length === 0) {
-      await conn.end();
       return res.status(401).json({ message: "Usuario o contraseña incorrectos" });
     }
 
     const usuario = rows[0];
 
     if (!usuario.password) {
-      await conn.end();
       return res.status(500).json({ message: "El usuario no tiene contraseña registrada" });
     }
 
     const passwordValida = await bcrypt.compare(password, usuario.password);
 
     if (!passwordValida) {
-      await conn.end();
       return res.status(401).json({ message: "Usuario o contraseña incorrectos" });
     }
-
-    await conn.end();
 
     res.json({
       message: "Login exitoso",
@@ -62,17 +64,37 @@ app.post("/login", async (req, res) => {
     });
 
   } catch (err) {
-    console.error("❌ Error en /login:", err);
+    logger.error({ error: err.message, stack: err.stack }, "Error en /login");
     res.status(500).json({ error: "Error interno del servidor" });
   }
 });
 
-// Rutas API
-app.use("/api/clientes", clienteRoutes);
-app.use("/api/ordenes", ordenRoutes);
-app.use("/api/tecnicos", tecnicoRoutes);
-app.use("/api/reclamos", reclamoRoutes);
+// Registrar ruta de auth (ANTES de las rutas protegidas)
+app.use("/api/auth", authRoutes);
+
+// Importar middleware
+const { authenticateToken, requireRole } = require("./middleware/auth");
+
+// Proteger rutas existentes (DESPUÉS de registrar authRoutes)
+app.use("/api/clientes", authenticateToken, clienteRoutes);
+app.use("/api/tecnicos", authenticateToken, tecnicoRoutes);
+app.use("/api/ordenes", authenticateToken, ordenRoutes);
+app.use("/api/reclamos", authenticateToken, reclamoRoutes);
+
+
 app.use("/api/tipo-servicio", tipoServicioRoutes);
+
+// Middleware para servir páginas HTML sin extensión
+app.get('/:page', (req, res, next) => {
+  const page = req.params.page;
+  const allowedPages = ['login', 'dashboard', 'clientes', 'tecnicos', 'ordenes', 'reclamos', 'agenda'];
+  
+  if (allowedPages.includes(page)) {
+    res.sendFile(path.join(__dirname, `../public/${page}.html`));
+  } else {
+    next();
+  }
+});
 
 // Ruta para servir archivos HTML (SPA fallback)
 app.use((req, res) => {
@@ -83,7 +105,7 @@ app.use((req, res) => {
 const PORT = process.env.PORT || 3000;
 if (process.env.NODE_ENV !== 'test') {
   app.listen(PORT, () => {
-    console.log(`✅ Servidor corriendo en http://localhost:${PORT}`);
+    logger.info("Servidor corriendo en http://localhost:3000");
   });
 }
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const clienteModel = require("../models/clienteModel");
+const logger = require("../config/logger");
 
 // GET todos los clientes
 router.get("/", async (req, res) => {
@@ -8,7 +9,11 @@ router.get("/", async (req, res) => {
     const clientes = await clienteModel.getAll();
     res.json(clientes);
   } catch (err) {
-    console.error("❌ Error al obtener clientes:", err);
+    logger.error({ 
+      error: err.message, 
+      stack: err.stack,
+      user: req.user ? { id: req.user.id, username: req.user.username } : undefined 
+    }, "Error al obtener clientes");
     res.status(500).json({ error: "Error al obtener clientes" });
   }
 });
@@ -20,7 +25,7 @@ router.get("/:id", async (req, res) => {
     if (!cliente) return res.status(404).json({ error: "Cliente no encontrado" });
     res.json(cliente);
   } catch (err) {
-    console.error("❌ Error al obtener cliente:", err);
+    logger.error({ error: err.message }, "Error al obtener cliente");
     res.status(500).json({ error: "Error al obtener cliente" });
   }
 });
@@ -31,7 +36,7 @@ router.post("/", async (req, res) => {
     await clienteModel.create(req.body);
     res.json({ message: "Cliente creado correctamente" });
   } catch (err) {
-    console.error("❌ Error al crear cliente:", err);
+    logger.error({ error: err.message }, "Error al crear cliente");
     if (err.message === "Razón social y CUIT son obligatorios") {
       return res.status(400).json({ error: err.message });
     }
@@ -48,7 +53,7 @@ router.put("/:id", async (req, res) => {
     }
     res.json({ message: "Cliente actualizado correctamente" });
   } catch (err) {
-    console.error("❌ Error al actualizar cliente:", err);
+    logger.error({ error: err.message }, "Error al actualizar cliente");
     res.status(500).json({ error: "Error al actualizar cliente" });
   }
 });
@@ -62,7 +67,7 @@ router.delete("/:id", async (req, res) => {
     }
     res.json({ message: "Cliente eliminado correctamente" });
   } catch (err) {
-    console.error("❌ Error al eliminar cliente:", err);
+    logger.error({ error: err.message }, "Error al eliminar cliente");
     res.status(500).json({ error: "Error al eliminar cliente" });
   }
 });

@@ -7,7 +7,7 @@ let modoEdicion = { activo: false, id: null };
 // Cargar reclamos en la tabla
 async function cargarReclamos() {
   try {
-    const response = await fetch("/api/reclamos");
+    const response = await fetchWithAuth("/api/reclamos");
     const reclamos = await response.json();
     reclamosGlobal = reclamos;
     mostrarReclamos(reclamos);
@@ -109,7 +109,7 @@ document.getElementById("formNuevoReclamo").addEventListener("submit", async fun
     const url = modoEdicion.activo ? `/api/reclamos/${modoEdicion.id}` : "/api/reclamos";
     const method = modoEdicion.activo ? "PUT" : "POST";
     
-    const response = await fetch(url, {
+    const response = await fetchWithAuth(url, {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ detalles, fecha })
@@ -140,7 +140,7 @@ document.getElementById("btnAgregarReclamo").addEventListener("click", nuevoRecl
 // Editar reclamo
 async function editarReclamo(id) {
   try {
-    const response = await fetch(`/api/reclamos/${id}`);
+    const response = await fetchWithAuth(`/api/reclamos/${id}`);
     const reclamo = await response.json();
 
     modoEdicion = { activo: true, id };
@@ -166,7 +166,7 @@ async function eliminarReclamo(id) {
   if (!confirm("¿Estás seguro de eliminar este reclamo?")) return;
 
   try {
-    const response = await fetch(`/api/reclamos/${id}`, {
+    const response = await fetchWithAuth(`/api/reclamos/${id}`, {
       method: "DELETE"
     });
     
@@ -195,7 +195,7 @@ document.addEventListener("DOMContentLoaded", () => {
   const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
-      window.location.href = "login.html";
+      logout();
     });
   }
 });

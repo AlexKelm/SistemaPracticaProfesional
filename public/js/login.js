@@ -9,7 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const password = document.getElementById("password").value;
 
     try {
-      const response = await fetch("/login", {
+      const response = await fetch("/api/auth/login", {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
@@ -21,6 +21,8 @@ document.addEventListener("DOMContentLoaded", () => {
 
       if (response.ok) {
         console.log("✅ Login exitoso: " + data.message);
+        // Guardar token en localStorage
+        localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));
         window.location.href = "dashboard.html";
       } else {
@@ -32,3 +34,33 @@ document.addEventListener("DOMContentLoaded", () => {
     }
   });
 });
+
+// Función helper para fetch con autenticación
+async function fetchWithAuth(url, options = {}) {
+  const token = localStorage.getItem('token');
+  
+  if (!token) {
+    window.location.href = 'login.html';
+    return;
+  }
+
+  const headers = {
+    ...options.headers,
+    'Authorization': `Bearer ${token}`,
+    'Content-Type': 'application/json'
+  };
+
+  const response = await fetch(url, { ...options, headers });
+
+  if (response.status === 401 || response.status === 403) {
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    window.location.href = 'login.html';
+    return;
+  }
+
+  return response;
+}
+
+// Usar en lugar de fetch normal
+// Ejemplo: const response = await fetchWithAuth('/api/clientes');

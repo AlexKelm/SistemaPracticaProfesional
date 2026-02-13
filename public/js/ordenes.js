@@ -7,7 +7,7 @@ let modoEdicion = { activo: false, id: null };
 // Cargar órdenes en la tabla
 async function cargarOrdenes() {
   try {
-    const response = await fetch("/api/ordenes");
+    const response = await fetchWithAuth("/api/ordenes");
     const ordenes = await response.json();
     ordenesGlobal = ordenes;
     mostrarOrdenes(ordenes);
@@ -72,7 +72,7 @@ async function abrirModal() {
   // Cargar clientes
   const selectCliente = document.getElementById("selectCliente");
   selectCliente.innerHTML = "";
-  const clientesResp = await fetch("/api/clientes");
+  const clientesResp = await fetchWithAuth("/api/clientes");
   const clientes = await clientesResp.json();
   
   if (clientes.length === 0) {
@@ -99,7 +99,7 @@ async function abrirModal() {
   
   try {
     console.log("🔄 Cargando tipos de servicio...");
-    const tiposResp = await fetch("/api/tipo-servicio");
+    const tiposResp = await fetchWithAuth("/api/tipo-servicio");
     console.log("📡 Response tipos de servicio:", tiposResp.status);
     
     if (!tiposResp.ok) {
@@ -134,7 +134,7 @@ async function abrirModal() {
   
   try {
     console.log("🔄 Cargando técnicos...");
-    const tecnicosResp = await fetch("/api/tecnicos");
+    const tecnicosResp = await fetchWithAuth("/api/tecnicos");
     console.log("📡 Response técnicos:", tecnicosResp.status);
     
     if (!tecnicosResp.ok) {
@@ -213,7 +213,7 @@ document.getElementById("formNuevaOrden").addEventListener("submit", async funct
   try {
     const url = modoEdicion.activo ? `/api/ordenes/${modoEdicion.id}` : "/api/ordenes";
     const method = modoEdicion.activo ? "PUT" : "POST";
-    const response = await fetch(url, {
+    const response = await fetchWithAuth(url, {
       method,
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -250,7 +250,7 @@ document.getElementById("btnCerrarModalOrden").addEventListener("click", cerrarM
 
 async function editarOrden(id) {
   try {
-    const response = await fetch(`/api/ordenes/${id}`);
+    const response = await fetchWithAuth(`/api/ordenes/${id}`);
     const orden = await response.json();
 
     modoEdicion = { activo: true, id };
@@ -277,7 +277,7 @@ async function eliminarOrden(id) {
   const confirmar = confirm(`¿Seguro que deseas eliminar la orden #${id}?`);
   if (!confirmar) return;
   try {
-    await fetch(`/api/ordenes/${id}`, { method: "DELETE" });
+    await fetchWithAuth(`/api/ordenes/${id}`, { method: "DELETE" });
     cargarOrdenes();
   } catch (err) {
     console.error("Error al eliminar orden:", err);
@@ -286,7 +286,7 @@ async function eliminarOrden(id) {
 
 async function verOrden(id) {
   try {
-    const response = await fetch(`/api/ordenes/${id}`);
+    const response = await fetchWithAuth(`/api/ordenes/${id}`);
     const orden = await response.json();
     const cont = document.getElementById("contenidoVerOrden");
     cont.innerHTML = `
@@ -329,5 +329,5 @@ document.addEventListener("DOMContentLoaded", () => {
 //logout
 if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
-      window.location.href = "login.html";
+      logout();
     })};

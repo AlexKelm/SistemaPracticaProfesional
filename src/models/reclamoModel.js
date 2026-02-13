@@ -23,8 +23,8 @@ async function getAll() {
       `SELECT r.* FROM reclamos r`
     );
     return rows;
-  } finally {
-    await conn.end();
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -38,8 +38,8 @@ async function getById(id) {
       [id]
     );
     return rows[0];
-  } finally {
-    await conn.end();
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -59,8 +59,8 @@ async function create(data) {
        VALUES (?, ?)`,
       [detalles, fecha ? new Date(fecha) : new Date()]
     );
-  } finally {
-    await conn.end();
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -86,8 +86,8 @@ async function update(id, data) {
       valores
     );
     return result;
-  } finally {
-    await conn.end();
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -101,8 +101,8 @@ async function remove(id) {
       [id]
     );
     return result;
-  } finally {
-    await conn.end();
+  } catch (error) {
+    throw error;
   }
 }
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const reclamoModel = require("../models/reclamoModel");
+const logger = require("../config/logger");
 
 // GET todos los reclamos
 router.get("/", async (req, res) => {
@@ -8,7 +9,7 @@ router.get("/", async (req, res) => {
     const reclamos = await reclamoModel.getAll();
     res.json(reclamos);
   } catch (err) {
-    console.error("Error al obtener reclamos:", err);
+    logger.error({ error: err.message }, "Error al obtener reclamos");
     res.status(500).json({ error: "Error al obtener reclamos" });
   }
 });
@@ -20,7 +21,7 @@ router.get("/:id", async (req, res) => {
     if (!reclamo) return res.status(404).json({ error: "Reclamo no encontrado" });
     res.json(reclamo);
   } catch (err) {
-    console.error("Error al obtener reclamo:", err);
+    logger.error({ error: err.message }, "Error al obtener reclamo");
     res.status(500).json({ error: "Error al obtener reclamo" });
   }
 });
@@ -48,7 +49,7 @@ router.put("/:id", async (req, res) => {
     }
     res.json({ message: "Reclamo actualizado correctamente" });
   } catch (err) {
-    console.error("Error al actualizar reclamo:", err);
+    logger.error({ error: err.message }, "Error al actualizar reclamo");
     res.status(500).json({ error: "Error al actualizar reclamo" });
   }
 });
@@ -62,7 +63,7 @@ router.delete("/:id", async (req, res) => {
     }
     res.json({ message: "Reclamo eliminado correctamente" });
   } catch (err) {
-    console.error("Error al eliminar reclamo:", err);
+    logger.error({ error: err.message }, "Error al eliminar reclamo");
     res.status(500).json({ error: "Error al eliminar reclamo" });
   }
 });

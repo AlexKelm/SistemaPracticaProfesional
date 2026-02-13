@@ -58,7 +58,6 @@
                 <th>Nombre</th>
                 <th>Email</th>
                 <th>Teléfono</th>
-                <th>Dirección</th>
                 <th>Fecha Creación</th>
                 <th>Acciones</th>
               </tr>
@@ -96,10 +95,6 @@
           <label for="telefono">Teléfono:</label>
           <input type="text" id="telefono" name="telefono">
         </div>
-        <div class="form-group">
-          <label for="direccion">Dirección:</label>
-          <textarea id="direccion" name="direccion" rows="3"></textarea>
-        </div>
         <div class="form-actions">
           <button type="button" class="btn-secondary" id="cancelarTecnico">Cancelar</button>
           <button type="submit" class="btn-primary" id="guardarTecnico">Guardar</button>
@@ -121,6 +116,7 @@
     </div>
   </div>
 
+  <script src="js/api.js"></script>
   <script src="js/tecnicos.js"></script>
   <script>
     // Toggle sidebar

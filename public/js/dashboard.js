@@ -34,7 +34,7 @@ function getEstadoClass(estado) {
 // Cargar órdenes próximas
 async function cargarProximasOrdenes() {
   try {
-    const response = await fetch("/api/ordenes");
+    const response = await fetchWithAuth("/api/ordenes");
     const ordenes = await response.json();
 
     if (!Array.isArray(ordenes)) {
@@ -104,7 +104,7 @@ async function cargarProximasOrdenes() {
 // Cargar reclamos recientes
 async function cargarReclamos() {
   try {
-    const response = await fetch("/api/reclamos");
+    const response = await fetchWithAuth("/api/reclamos");
     const reclamos = await response.json();
 
     if (!Array.isArray(reclamos)) {
@@ -186,5 +186,5 @@ document.addEventListener("DOMContentLoaded", () => {
 //logout
 if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
-      window.location.href = "login.html";
+      logout();
     })};

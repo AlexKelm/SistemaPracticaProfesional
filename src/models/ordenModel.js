@@ -26,7 +26,6 @@ async function getAll() {
      LEFT JOIN tecnico t ON o.tecnico_id = t.id
      LEFT JOIN persona pt ON t.persona_id = pt.id`
   );
-  await conn.end();
   return rows;
 }
 
@@ -47,7 +46,6 @@ async function getById(id) {
      WHERE o.id = ?`,
     [id]
   );
-  await conn.end();
   return rows[0];
 }
 
@@ -138,8 +136,8 @@ async function create(data) {
     const query = `INSERT INTO orden_servicio (${campos.join(', ')}) VALUES (${placeholders})`;
     
     await conn.execute(query, valores);
-  } finally {
-    await conn.end();
+  } catch (error) {
+    throw error;
   }
 }
 
@@ -171,7 +169,6 @@ async function update(id, data) {
     `UPDATE orden_servicio SET ${updates.join(', ')} WHERE id = ?`,
     valores
   );
-  await conn.end();
   return result;
 }
 
@@ -182,7 +179,6 @@ async function remove(id) {
     "DELETE FROM orden_servicio WHERE id = ?",
     [id]
   );
-  await conn.end();
   return result;
 }
 

@@ -30,23 +30,24 @@ describe('reclamoModel', () => {
     expect(row.id).toBe(42);
   });
 
-  test('create valida cliente_id obligatorio', async () => {
-    await expect(reclamoModel.create({ descripcion: 'x' })).rejects.toThrow('cliente_id es obligatorio');
+  test('create valida detalles obligatorio', async () => {
+    mockExecute.mockResolvedValueOnce([{}]); // ensureTableExists
+    await expect(reclamoModel.create({})).rejects.toThrow('detalles es obligatorio');
   });
 
-  test('create inserta con cliente_id', async () => {
+  test('create inserta con detalles', async () => {
     mockExecute
       .mockResolvedValueOnce([{}]) // ensureTableExists
       .mockResolvedValueOnce([{}]); // INSERT
-    await reclamoModel.create({ cliente_id: 1, descripcion: 'algo' });
+    await reclamoModel.create({ detalles: 'Reclamo test', fecha: '2025-11-20' });
     expect(mockExecute).toHaveBeenCalledTimes(2);
   });
 
-  test('update retorna affectedRows', async () => {
+  test('update retorna affectedRows cuando actualiza', async () => {
     mockExecute
       .mockResolvedValueOnce([{}]) // ensureTableExists
-      .mockResolvedValueOnce([{ affectedRows: 1 }]);
-    const res = await reclamoModel.update(1, { estado: 'Resuelto' });
+      .mockResolvedValueOnce([{ affectedRows: 1 }]); // UPDATE
+    const res = await reclamoModel.update(1, { detalles: 'Actualizado' });
     expect(res.affectedRows).toBe(1);
   });
 

@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const tecnicoModel = require("../models/tecnicoModel");
+const logger = require("../config/logger");
 
 // GET todos los técnicos
 router.get("/", async (req, res) => {
@@ -8,7 +9,7 @@ router.get("/", async (req, res) => {
     const tecnicos = await tecnicoModel.getAll();
     res.json(tecnicos);
   } catch (err) {
-    console.error("Error al obtener técnicos:", err);
+    logger.error({ error: err.message }, "Error al obtener técnicos");
     res.status(500).json({ error: "Error al obtener técnicos" });
   }
 });
@@ -20,7 +21,7 @@ router.get("/:id", async (req, res) => {
     if (!tecnico) return res.status(404).json({ error: "Técnico no encontrado" });
     res.json(tecnico);
   } catch (err) {
-    console.error("Error al obtener técnico:", err);
+    logger.error({ error: err.message }, "Error al obtener técnico");
     res.status(500).json({ error: "Error al obtener técnico" });
   }
 });
@@ -65,7 +66,7 @@ router.delete("/:id", async (req, res) => {
     }
     res.json({ message: "Técnico eliminado correctamente" });
   } catch (err) {
-    console.error("Error al eliminar técnico:", err);
+    logger.error({ error: err.message }, "Error al eliminar técnico");
     res.status(500).json({ error: "Error al eliminar técnico" });
   }
 });
@@ -76,7 +77,7 @@ router.get("/:id/ordenes", async (req, res) => {
     const ordenes = await tecnicoModel.getOrdenesAsignadas(req.params.id);
     res.json(ordenes);
   } catch (err) {
-    console.error("Error al obtener órdenes del técnico:", err);
+    logger.error({ error: err.message }, "Error al obtener órdenes del técnico");
     res.status(500).json({ error: "Error al obtener órdenes del técnico" });
   }
 });

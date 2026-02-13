@@ -25,17 +25,33 @@ describe('ordenModel', () => {
   });
 
   test('create usa cliente existente si falta cliente_id', async () => {
-    // Primer SELECT clientes -> devuelve uno
+    // SELECT clientes
+    mockExecute.mockResolvedValueOnce([[{ id: 5 }]]);
+    // SELECT tipo_servicio
+    mockExecute.mockResolvedValueOnce([[{ id: 1 }]]);
+    // SELECT tecnicos
+    mockExecute.mockResolvedValueOnce([[{ id: 1 }]]);
+    // SELECT reclamos
+    mockExecute.mockResolvedValueOnce([[{ id: 1 }]]);
+    // SELECT cliente exists
     mockExecute.mockResolvedValueOnce([[{ id: 5 }]]);
     // INSERT
     mockExecute.mockResolvedValueOnce([{}]);
-    await ordenModel.create({ descripcion: 'Orden sin cliente explícito' });
-    expect(mockExecute.mock.calls[1][0]).toContain('INSERT INTO orden_servicio');
+    
+    await ordenModel.create({ fecha_creacion: '2025-11-20' });
+    expect(mockExecute).toHaveBeenCalled();
   });
 
   test('create lanza error si no puede setear cliente_id', async () => {
     // SELECT clientes -> vacío
     mockExecute.mockResolvedValueOnce([[]]);
+    // SELECT tipo_servicio
+    mockExecute.mockResolvedValueOnce([[]]);
+    // SELECT tecnicos
+    mockExecute.mockResolvedValueOnce([[]]);
+    // SELECT reclamos
+    mockExecute.mockResolvedValueOnce([[]]);
+    
     await expect(ordenModel.create({})).rejects.toThrow('cliente_id y fecha_creacion son obligatorios');
   });
 

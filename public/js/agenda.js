@@ -3,7 +3,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   var eventList = document.getElementById('eventList');
 
   // Obtener órdenes del backend
-  const response = await fetch("/api/ordenes");
+  const response = await fetchWithAuth("/api/ordenes");
   const ordenes = await response.json();
   if (!Array.isArray(ordenes)) {
     console.error("La respuesta de /api/ordenes no es un array:", ordenes);
@@ -56,4 +56,11 @@ document.addEventListener('DOMContentLoaded', async function() {
     li.innerHTML = `<strong>${fecha}</strong> – Orden #${o.id} (${o.descripcion || o.observacion || "Sin descripción"})`;
     eventList.appendChild(li);
   });
+  //logout
+    const logoutBtn = document.getElementById("logoutBtn");
+  if (logoutBtn) {
+    logoutBtn.addEventListener("click", () => {
+      window.location.href = "login.html";
+    });
+  }
 });
