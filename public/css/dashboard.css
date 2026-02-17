@@ -1,8 +1,9 @@
 /* Layout general */
 .dashboard-container {
   display: flex;
-  min-height: 100vh;
+  height: 100vh;
   background: #f3f4f6;
+  overflow: hidden;
 }
 
 /* Sidebar */
@@ -14,26 +15,9 @@
   flex-direction: column;
   padding: 30px 20px;
   box-shadow: 4px 0 15px rgba(0, 0, 0, 0.1);
-  overflow-y: auto;
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-}
-
-.sidebar::-webkit-scrollbar {
-  width: 6px;
-}
-
-.sidebar::-webkit-scrollbar-track {
-  background: rgba(255, 255, 255, 0.05);
-  border-radius: 10px;
-}
-
-.sidebar::-webkit-scrollbar-thumb {
-  background: rgba(255, 255, 255, 0.2);
-  border-radius: 10px;
-}
-
-.sidebar::-webkit-scrollbar-thumb:hover {
-  background: rgba(255, 255, 255, 0.3);
+  height: 100vh;
+  overflow-y: auto;
 }
 
 .sidebar-logo {
@@ -111,6 +95,7 @@
   display: flex;
   flex-direction: column;
   overflow-y: auto;
+  height: 100vh;
 }
 
 .main-content::-webkit-scrollbar {
@@ -568,6 +553,7 @@
     height: 100vh;
     z-index: 999;
     transition: transform 0.3s ease;
+    overflow-y: auto;
   }
 
   .sidebar.collapsed {
@@ -577,6 +563,28 @@
 
   .dashboard-container.sidebar-collapsed .sidebar {
     transform: translateX(-100%);
+  }
+
+  /* Mantener el botón toggle visible en mobile incluso cuando el sidebar está colapsado */
+  .sidebar-toggle {
+    position: fixed !important;
+    left: 10px;
+    top: 10px;
+    z-index: 1001;
+    background: rgba(30, 60, 114, 0.95) !important;
+    padding: 10px;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+  }
+
+  .sidebar.collapsed .sidebar-toggle {
+    transform: translateX(0) !important;
+    display: flex !important;
+  }
+
+  /* Ajustar el contenido principal para dar espacio en la parte superior */
+  .main-content {
+    padding-top: 70px;
   }
 
   .dashboard-container::after {

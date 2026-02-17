@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', async function() {
     const logoutBtn = document.getElementById("logoutBtn");
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
-      window.location.href = "login.html";
+      window.location.href = "/login";
     });
   }
 });

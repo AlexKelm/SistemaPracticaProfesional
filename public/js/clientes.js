@@ -2,12 +2,13 @@ console.log("clientes.js cargado correctamente");
 const tablaClientes = document.getElementById("tablaClientes");
 let clientesGlobal = []; // Guardar todos los clientes
 
-// 🔹 Cargar clientes en la tabla
+// Cargar clientes en la tabla
 async function cargarClientes() {
   try {
     const response = await fetchWithAuth("/api/clientes");
     const clientes = await response.json();
     clientesGlobal = clientes; // Guardar para filtrar
+    // console.log(clientes);
     mostrarClientes(clientes);
   } catch (err) {
     console.error("Error al cargar clientes:", err);
@@ -24,7 +25,7 @@ function mostrarClientes(clientes) {
       <td>${cliente.cuit}</td>
       <td>${cliente.telefono || '-'}</td>
       <td>${cliente.email || '-'}</td>
-      <td>${cliente.referencias || '-'}</td>
+      <td>${cliente.nombre + " " + cliente.apellido || '-'}</td>
       <td class="acciones">
         <button class="btn-small btn-primary" onclick="editarCliente(${cliente.id})">Editar</button>
         <button class="btn-small btn-danger" onclick="eliminarCliente(${cliente.id})">Eliminar</button>
@@ -145,7 +146,7 @@ document.getElementById("btnCerrarModalCliente").addEventListener("click", cerra
 // Reemplaza el prompt por el modal
 document.getElementById("btnAgregarCliente").addEventListener("click", mostrarModalNuevoCliente);
 
-// 🔹 Ver detalles de un cliente
+// Ver detalles de un cliente
 async function verDetalles(id) {
   // Mostrar datos del cliente como antes
   const clienteResp = await fetchWithAuth(`/api/clientes/${id}`);
@@ -194,7 +195,7 @@ async function eliminarCliente(id) {
 }
 
 
-// 🔹 Inicializar tabla al cargar la página
+// Inicializar tabla al cargar la página
 document.addEventListener("DOMContentLoaded", () => {
   cargarClientes();
   // Buscador

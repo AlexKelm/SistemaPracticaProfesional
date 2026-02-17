@@ -3,7 +3,7 @@ async function fetchWithAuth(url, options = {}) {
   const token = localStorage.getItem('token');
   
   if (!token) {
-    window.location.href = 'login.html';
+    window.location.href = '/login';
     return;
   }
 
@@ -18,7 +18,7 @@ async function fetchWithAuth(url, options = {}) {
   if (response.status === 401 || response.status === 403) {
     localStorage.removeItem('token');
     localStorage.removeItem('user');
-    window.location.href = 'login.html';
+    window.location.href = '/login';
     return;
   }
 
@@ -32,6 +32,6 @@ function logout() {
   localStorage.removeItem('user');
   
   // Redirigir al login
-  window.location.href = 'login.html';
+  window.location.href = '/login';
 }
 

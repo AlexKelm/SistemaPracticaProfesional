@@ -83,7 +83,7 @@ async function cargarProximasOrdenes() {
       proximasLista.querySelectorAll('.orden-clickeable').forEach(li => {
         li.addEventListener('click', function() {
           const ordenId = this.getAttribute('data-orden-id');
-          window.location.href = `ordenes.html?id=${ordenId}`;
+          window.location.href = `/ordenes?id=${ordenId}`;
         });
       });
     }
@@ -134,7 +134,7 @@ async function cargarReclamos() {
       // Agregar listeners a los elementos
       reclamosLista.querySelectorAll('.reclamo-clickeable').forEach(li => {
         li.addEventListener('click', function() {
-          window.location.href = 'reclamos.html';
+          window.location.href = '/reclamos';
         });
       });
     }
@@ -172,7 +172,7 @@ document.addEventListener("DOMContentLoaded", () => {
   if (logoutBtn) {
     logoutBtn.addEventListener("click", () => {
       localStorage.removeItem("user");
-      window.location.href = "login.html";
+      window.location.href = "/login";
     });
   }
 
