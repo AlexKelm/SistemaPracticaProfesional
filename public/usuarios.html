@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clientes - Sistema de Gestión</title>
+  <link rel="icon" type="image/png" href="icono.png">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/dashboard.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/clientes.css">
+</head>
+<body>
+  <div class="dashboard-container">
+    <!-- Sidebar cargado dinámicamente -->
+    
+    <!-- Contenido principal -->
+    <main class="main-content">
+      <!-- Header superior -->
+      <header class="dashboard-header">
+        <div class="header-left">
+          <h1>Usuarios</h1>
+        </div>
+        <button id="logoutBtn" class="btn-primary">Cerrar sesión</button>
+      </header>
+
+      <!-- Contenido de usuarios -->
+      <section class="content-section">
+        <div class="clientes-header">
+          <button class="btn-primary" id="btnAgregarUsuario">+ Nuevo Usuario</button>
+          <input 
+            type="text" 
+            id="buscadorUsuario" 
+            class="input-buscador" 
+            placeholder="🔍 Buscar usuario..."
+          >
+        </div>
+
+        <div class="table-container">
+          <table class="usuarios-table">
+            <thead>
+              <tr>
+                <th>id Usuario</th>
+                <th>Usuario</th>
+                <th>Rol</th>
+                <th>Activo</th>
+                <th>Fecha Creación</th>
+                <th>Acciones</th>
+              </tr>
+            </thead>
+            <tbody id="tablaUsuarios">
+              <!-- Filas dinámicas -->
+            </tbody>
+          </table>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Modal para nuevo usuario -->
+  <div id="modalNuevoUsuario" class="modal" style="display:none;">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h2 id="tituloModalUsuario">Nuevo Usuario</h2>
+        <button type="button" class="btn-close" id="btnCerrarModalUsuario">&times;</button>
+      </div>
+      <form id="formNuevoUsuario">
+        <div class="form-group">
+          <label>Usuario:</label>
+          <input type="text" id="inputUsuario" required>
+        </div>
+        <div class="form-group" id="passwordGroup">
+          <label>Contraseña:</label>
+          <input type="password" id="inputPassword" placeholder="Dejar vacío para no cambiar">
+        </div>
+        <div class="form-group">
+          <label>Rol:</label>
+          <select id="inputRol" required>
+            <option value="">Seleccionar rol</option>
+            <option value="admin">Administrador</option>
+            <option value="tecnico">Técnico</option>
+            <option value="supervisor">Supervisor</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Activo:</label>
+          <select id="inputActivo" required>
+            <option value="1">Sí</option>
+            <option value="0">No</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="submit" class="btn-primary">Guardar</button>
+          <button type="button" id="btnCancelarUsuario" class="btn-secondary">Cancelar</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="js/sidebar-loader.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/usuarios.js"></script>
+</body>
+</html>

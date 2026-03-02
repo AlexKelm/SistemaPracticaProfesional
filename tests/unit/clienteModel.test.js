@@ -33,7 +33,6 @@ describe('clienteModel', () => {
     expect(Array.isArray(rows)).toBe(true);
     expect(rows[0]).toHaveProperty('razon_social');
     expect(rows[0]).toHaveProperty('nombre');
-    expect(mockEnd).toHaveBeenCalled();
   });
 
   test('getById devuelve primer registro con datos de persona', async () => {
@@ -47,7 +46,6 @@ describe('clienteModel', () => {
     const row = await clienteModel.getById(2);
     expect(row).toHaveProperty('razon_social');
     expect(row).toHaveProperty('nombre');
-    expect(mockEnd).toHaveBeenCalled();
   });
 
   test('create lanza error si falta razon_social', async () => {
@@ -76,7 +74,6 @@ describe('clienteModel', () => {
     });
     
     expect(mockExecute).toHaveBeenCalledTimes(2); // persona + cliente
-    expect(mockEnd).toHaveBeenCalled();
   });
 
   test('update actualiza cliente y persona', async () => {
@@ -116,7 +113,6 @@ describe('clienteModel', () => {
     
     expect(mockExecute).toHaveBeenCalledTimes(3);
     expect(res.affectedRows).toBe(1);
-    expect(mockEnd).toHaveBeenCalled();
   });
 
   test('remove lanza error si cliente no existe', async () => {

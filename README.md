@@ -1,7 +1,7 @@
 # Sistema de Práctica Profesional
 
 ## 📋 Descripción
-Sistema integral de gestión de órdenes de servicio técnico desarrollado con Node.js, Express y MySQL. Incluye gestión de clientes, técnicos, órdenes de servicio, reclamos y agenda de citas.
+Sistema integral de gestión de órdenes de servicio técnico desarrollado con Node.js, Express y MySQL. Incluye gestión de usuarios, clientes, técnicos, órdenes de servicio, reclamos y agenda.
 
 ## 📦 Estructura del Proyecto
 
@@ -22,7 +22,7 @@ Sistema integral de gestión de órdenes de servicio técnico desarrollado con N
 │   │   ├── tecnicoRoutes.js
 │   │   ├── reclamoRoutes.js
 │   │   └── tipoServicioRoutes.js
-│   ├── middleware/             # Middleware personalizado
+│   ├── middleware/             # Middleware 
 │   └── scripts/                # Scripts de utilidad
 │       ├── crearUsuario.js     # Crear usuario admin
 │       ├── crearTecnicos.js    # Generar técnicos de prueba
@@ -113,12 +113,7 @@ Credenciales por defecto:
 - **Usuario:** admin
 - **Contraseña:** admin123
 
-### 4. Crear Técnicos de Ejemplo (Opcional)
-```bash
-npm run crear-tecnicos
-```
-
-### 5. Iniciar el Servidor
+### 4. Iniciar el Servidor
 
 **Modo desarrollo** (con auto-reload):
 ```bash
@@ -132,29 +127,25 @@ npm start
 
 El servidor se ejecutará en `http://localhost:3000`
 
-## 📝 Scripts Disponibles
+## 📝 Scripts <Importantes>
 
 - `npm start` - Inicia el servidor en modo producción
 - `npm run dev` - Inicia el servidor en modo desarrollo (con nodemon para auto-reload)
 - `npm test` - Ejecuta los tests con Jest
 - `npm run coverage` - Genera reporte de cobertura de tests
-- `npm run crear-usuario` - Crea un usuario administrador predeterminado
-- `npm run crear-tecnicos` - Crea técnicos de ejemplo en la base de datos
-- `npm run seed-data` - Puebla la base de datos con datos de prueba
-- `npm run check-data` - Verifica los datos en la base de datos
 
 
 ## 🌐 Acceso a la Aplicación
 
 Después de iniciar el servidor, accede a:
 - **Inicio:** http://localhost:3000 (redirige automáticamente a login)
-- **Login:** http://localhost:3000/login.html
-- **Dashboard:** http://localhost:3000/dashboard.html (requiere autenticación)
-- **Clientes:** http://localhost:3000/clientes.html
-- **Órdenes:** http://localhost:3000/ordenes.html
-- **Técnicos:** http://localhost:3000/tecnicos.html
-- **Reclamos:** http://localhost:3000/reclamos.html
-- **Agenda:** http://localhost:3000/agenda.html
+- **Login:** http://localhost:3000/login
+- **Dashboard:** http://localhost:3000/dashboard (requiere login)
+- **Clientes:** http://localhost:3000/clientes (requiere login)
+- **Órdenes:** http://localhost:3000/ordenes (requiere login)
+- **Técnicos:** http://localhost:3000/tecnicos (requiere login)
+- **Reclamos:** http://localhost:3000/reclamos (requiere login)
+- **Agenda:** http://localhost:3000/agenda (requiere login)
 
 ## 🔗 API Endpoints
 
@@ -254,47 +245,7 @@ Después de iniciar el servidor, accede a:
 - ✅ Prevención de usuarios duplicados (validación de email/usuario)
 - ✅ Sanitización de inputs para prevenir SQL injection
 - ✅ Sesiones de autenticación validadas
-- ⚠️ **Nota:** En producción se recomienda implementar JWT o sessions con express-session
-
-## ✨ Características Principales
-
-### 🎯 Dashboard Interactivo
-- Vista general de próximas órdenes de servicio
-- Lista de reclamos recientes (ordenados por fecha)
-- Estadísticas en tiempo real
-- Navegación rápida a cada módulo
-
-### 👥 Gestión de Clientes
-- CRUD completo con normalización (tabla `persona`)
-- Búsqueda y filtrado en tiempo real
-- Datos de contacto (email, teléfono)
-- Historial de órdenes por cliente
-
-### 🔧 Gestión de Órdenes de Servicio
-- Estados: Pendiente, En Proceso, Completada, Cancelada
-- Prioridades: Baja, Media, Alta
-- Asignación de técnicos
-- Tipos de servicio configurables
-- Cálculo de costos
-- Observaciones detalladas
-
-### 👨‍🔧 Gestión de Técnicos
-- Autenticación individual por técnico
-- Visualización de órdenes asignadas
-- Sistema de asignación de tareas
-- Control de disponibilidad
-
-### 📋 Gestión de Reclamos
-- Registro de reclamos de clientes
-- Seguimiento por fecha
-- Integración con dashboard
-- Vinculación opcional con órdenes
-
-### 📅 Agenda de Citas
-- Calendario visual con **FullCalendar**
-- Visualización de fechas de servicio
-- Código de colores por prioridad
-- Vista mensual/semanal/diaria
+- ✅ Implementado JWT para validacion de sesiones
 
 ## 🧪 Testing
 
@@ -312,157 +263,6 @@ npm run coverage
 # Ver reporte HTML de cobertura
 # Abrir: coverage/lcov-report/index.html
 ```
-
-### Tipos de Tests
-
-#### 1️⃣ **Tests Unitarios** (`tests/unit/`)
-Tests aislados de los modelos de datos con mocks de base de datos.
-
-- **`clienteModel.test.js`** - 11 tests
-  - ✅ `getAll()` con JOIN de persona
-  - ✅ `getById()` con datos de persona
-  - ✅ `create()` inserta persona + cliente (2 INSERTs)
-  - ✅ `update()` actualiza ambas tablas (persona y cliente)
-  - ✅ `remove()` elimina cliente + persona en cascada
-  - ✅ Validaciones de campos obligatorios
-
-- **`tecnicoModel.test.js`** - 9 tests
-  - ✅ `getAll()` con datos de persona
-  - ✅ `create()` inserta persona + técnico
-  - ✅ `update()` actualiza datos de persona
-  - ✅ `remove()` elimina técnico + persona
-  - ✅ `getOrdenesAsignadas()` lista órdenes del técnico
-  - ✅ `asignarOrden()` asigna orden a técnico
-
-- **`ordenModel.test.js`** - 6 tests
-  - ✅ `getAll()` y `getById()` con JOIN a cliente
-  - ✅ `create()` con selección automática de cliente/tipo/técnico
-  - ✅ `update()` y `remove()` con validaciones
-  - ✅ Manejo de foreign keys opcionales
-
-- **`reclamoModel.test.js`** - 6 tests
-  - ✅ CRUD completo de reclamos
-  - ✅ Validación de campo `detalles` obligatorio
-  - ✅ `ensureTableExists()` para compatibilidad
-
-#### 2️⃣ **Tests de API CRUD** (`api.crud.test.js`)
-Tests de integración completos para todos los endpoints REST.
-
-- **Clientes** - 5 tests
-  - ✅ GET /api/clientes (lista)
-  - ✅ POST /api/clientes (crear con persona)
-  - ✅ PUT /api/clientes/:id (actualizar)
-  - ✅ DELETE /api/clientes/:id (eliminar en cascada)
-  - ✅ Validaciones 400 Bad Request
-
-- **Técnicos** - 5 tests
-  - ✅ CRUD completo con normalización persona
-  - ✅ GET /api/tecnicos/:id/ordenes
-  - ✅ Validaciones de campos obligatorios
-
-- **Órdenes** - 6 tests
-  - ✅ CRUD con foreign keys (cliente, tipo_servicio, técnico)
-  - ✅ Estados y prioridades válidas
-  - ✅ Manejo de costos y fechas
-
-- **Reclamos** - 5 tests
-  - ✅ CRUD con campo `detalles`
-  - ✅ Manejo de fechas automáticas
-
-#### 3️⃣ **Tests de Autenticación** (`auth.test.js`)
-- ✅ POST /login con credenciales válidas
-- ✅ POST /login con credenciales inválidas
-- ✅ Validación de respuestas (200/401)
-
-#### 4️⃣ **Smoke Tests** (`api.smoke.test.js`)
-Tests rápidos para verificar que todos los endpoints respondan.
-
-- ✅ Conexión a base de datos
-- ✅ Todos los endpoints GET responden 200
-- ✅ Creación básica en cada módulo (POST)
-
-### Cobertura de Tests
-
-**Umbrales mínimos configurados:**
-```json
-{
-  "statements": 75,
-  "branches": 65,
-  "functions": 85,
-  "lines": 75
-}
-```
-
-**Cobertura actual:**
-- ✅ **61 tests pasando** (100% success rate)
-- ✅ **7 suites de tests** completas
-- ✅ Tiempo de ejecución: ~2 segundos
-- ✅ Todos los modelos con +85% de cobertura
-
-### Características de los Tests
-
-**Normalización con `persona`:**
-- Los tests reflejan correctamente la arquitectura de DB normalizada
-- `clienteModel` y `tecnicoModel` usan tabla `persona` para datos personales
-- Tests verifican INSERTs/UPDATEs en ambas tablas
-- Eliminación en cascada probada (cliente → persona, técnico → persona)
-
-**Foreign Keys y Cascadas:**
-- ✅ `orden_servicio.cliente_id` → CASCADE (elimina órdenes con cliente)
-- ✅ `orden_servicio.tecnico_id` → SET NULL (preserva órdenes al eliminar técnico)
-- ✅ `persona_referencia` → CASCADE en ambas direcciones
-- ✅ Tests verifican comportamiento de cada FK
-
-**Mocking y Aislamiento:**
-- Uso de `jest.mock()` para aislar capa de base de datos
-- Mock de conexiones con `mockExecute` y `mockEnd`
-- Tests unitarios 100% independientes de MySQL
-- Silenciado de logs con `jest.spyOn(console)`
-
-**Validaciones Probadas:**
-- ✅ Campos obligatorios (razón_social, cuit, nombre, apellido, detalles)
-- ✅ Estados y prioridades válidas en órdenes
-- ✅ Existencia de registros antes de actualizar/eliminar
-- ✅ Responses HTTP correctas (200, 400, 404, 500)
-
-### Estructura de Tests
-
-```
-tests/
-├── api.crud.test.js         # 🔄 Tests CRUD completos
-├── api.smoke.test.js        # 💨 Tests rápidos de salud
-├── auth.test.js             # 🔐 Tests de autenticación
-└── unit/                    # 🧩 Tests unitarios aislados
-    ├── clienteModel.test.js
-    ├── ordenModel.test.js
-    ├── reclamoModel.test.js
-    └── tecnicoModel.test.js
-```
-
-### CI/CD Ready
-
-Los tests están configurados para integrarse fácilmente en pipelines:
-
-```yaml
-# Ejemplo GitHub Actions
-- name: Run Tests
-  run: npm test
-  
-- name: Coverage Report
-  run: npm run coverage
-  
-- name: Upload Coverage
-  uses: codecov/codecov-action@v3
-```
-
-### Mejores Prácticas Implementadas
-
-✅ **AAA Pattern** (Arrange-Act-Assert) en todos los tests  
-✅ **Descriptive Names** - Nombres claros que documentan comportamiento  
-✅ **Isolated Tests** - Sin dependencias entre tests  
-✅ **Fast Execution** - Suite completa en ~2 segundos  
-✅ **Deterministic** - Mismo resultado en cada ejecución  
-✅ **Comprehensive** - Cubre casos exitosos y de error
 
 ## 🛠️ Tecnologías Utilizadas
 
@@ -496,22 +296,8 @@ Los tests están configurados para integrarse fácilmente en pipelines:
   - `reclamos` (quejas/reclamos)
   - `persona_referencia` (contactos de referencia)
 
-## 📚 Documentación Adicional
 
-- **`docs/TESTING.md`** - 📖 **Guía completa de testing** (setup, ejecución, troubleshooting)
-- **`FLUJO_FUNCIONAMIENTO.md`** - Diagrama de flujo y arquitectura de la aplicación
-- **`docs/test/PRUEBAS_IEEE829.md`** - Plan de pruebas según estándar IEEE 829
-- **`coverage/lcov-report/index.html`** - Reporte HTML interactivo de cobertura de tests
-- **`BaseDeDatos.sql`** - Dump completo del schema de la base de datos
-- **`src/scripts/`** - Scripts de utilidad para mantenimiento:
-  - `checkData.js` - Verificar datos en la BD
-  - `checkOrdenSchema.js` - Validar estructura de orden_servicio
-  - `checkReclamos.js` - Verificar tabla reclamos
-  - `checkPersonaReferences.js` - Analizar referencias a persona
-  - `fixTecnicoForeignKey.js` - Arreglar FK de técnicos
-  - `seedData.js` - Poblar BD con datos de prueba
-
-## 🚀 Despliegue en Producción
+## 🚀 Producción
 
 ### Requisitos del Servidor
 - Node.js v16 o superior

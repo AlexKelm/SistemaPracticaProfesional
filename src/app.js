@@ -16,6 +16,7 @@ const ordenRoutes = require("./routes/ordenRoutes");
 const tecnicoRoutes = require("./routes/tecnicoRoutes");
 const reclamoRoutes = require("./routes/reclamoRoutes");
 const tipoServicioRoutes = require("./routes/tipoServicioRoutes");
+const usuarioRoutes = require("./routes/usuarioRoutes");
 
 const app = express();
 
@@ -80,6 +81,7 @@ app.use("/api/clientes", authenticateToken, clienteRoutes);
 app.use("/api/tecnicos", authenticateToken, tecnicoRoutes);
 app.use("/api/ordenes", authenticateToken, ordenRoutes);
 app.use("/api/reclamos", authenticateToken, reclamoRoutes);
+app.use("/api/usuarios", authenticateToken, usuarioRoutes);
 
 
 app.use("/api/tipo-servicio", tipoServicioRoutes);
@@ -87,7 +89,7 @@ app.use("/api/tipo-servicio", tipoServicioRoutes);
 // Middleware para servir páginas HTML sin extensión
 app.get('/:page', (req, res, next) => {
   const page = req.params.page;
-  const allowedPages = ['login', 'dashboard', 'clientes', 'tecnicos', 'ordenes', 'reclamos', 'agenda'];
+  const allowedPages = ['login', 'dashboard', 'usuarios', 'clientes', 'tecnicos', 'ordenes', 'reclamos', 'agenda'];
   
   if (allowedPages.includes(page)) {
     res.sendFile(path.join(__dirname, `../public/${page}.html`));
