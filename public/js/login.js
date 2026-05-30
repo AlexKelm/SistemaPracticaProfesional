@@ -20,7 +20,6 @@ document.addEventListener("DOMContentLoaded", () => {
       const data = await response.json();
 
       if (response.ok) {
-        console.log("✅ Login exitoso: " + data.message);
         // Guardar token en localStorage
         localStorage.setItem("token", data.token);
         localStorage.setItem("user", JSON.stringify(data.user));

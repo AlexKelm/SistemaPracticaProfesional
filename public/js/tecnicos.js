@@ -34,14 +34,8 @@ document.addEventListener('DOMContentLoaded', function() {
     // Verificar que todos los elementos existen
     if (!tablaTecnicosBody || !btnAgregarTecnico || !modalTecnico || !formTecnico) {
         console.error('❌ Error: No se encontraron algunos elementos del DOM');
-        console.log('tablaTecnicosBody:', tablaTecnicosBody);
-        console.log('btnAgregarTecnico:', btnAgregarTecnico);
-        console.log('modalTecnico:', modalTecnico);
-        console.log('formTecnico:', formTecnico);
         return;
     }
-    
-    console.log('✅ Elementos del DOM inicializados correctamente');
     
     cargarTecnicos();
     configurarEventListeners();
@@ -57,7 +51,6 @@ function configurarEventListeners() {
     
     // Botón agregar técnico
     btnAgregarTecnico.addEventListener('click', () => {
-        console.log('✅ Click en btnAgregarTecnico');
         abrirModalNuevo();
     });
 
@@ -105,8 +98,6 @@ function configurarEventListeners() {
             e.target.style.display = 'none';
         }
     });
-    
-    console.log('✅ Event listeners configurados');
 }
 
 // Cargar técnicos desde la API
@@ -182,11 +173,6 @@ function filtrarTecnicos() {
 
 // Abrir modal para nuevo técnico
 function abrirModalNuevo() {
-    console.log('🔹 abrirModalNuevo() llamado');
-    console.log('modalTecnico:', modalTecnico);
-    console.log('modalTitulo:', modalTitulo);
-    console.log('formTecnico:', formTecnico);
-    
     if (!modalTecnico) {
         console.error('❌ modalTecnico no existe');
         return;
@@ -197,21 +183,15 @@ function abrirModalNuevo() {
     if (formTecnico) formTecnico.reset();
     if (estadoGroup) estadoGroup.style.display = 'none';
     modalTecnico.style.display = 'flex';
-    
-    console.log('✅ Modal abierto');
 }
 
 // Editar técnico
 function editarTecnico(id) {
-  console.log('🔹 editarTecnico() llamado con id:', id);
-  
   const tecnico = tecnicos.find(t => t.id_tecnico === id);
   if (!tecnico) {
     console.error('❌ Técnico no encontrado con id:', id);
     return;
   }
-
-  console.log('✅ Técnico encontrado:', tecnico);
 
   tecnicoEditando = tecnico;
   if (modalTitulo) modalTitulo.textContent = 'Editar Técnico';
@@ -230,7 +210,6 @@ function editarTecnico(id) {
   
   if (modalTecnico) {
     modalTecnico.style.display = 'flex';
-    console.log('✅ Modal de edición abierto');
   } else {
     console.error('❌ modalTecnico no existe');
   }

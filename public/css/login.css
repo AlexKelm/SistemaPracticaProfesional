@@ -57,9 +57,9 @@ body.login-body::before {
 }
 
 .login-container img {
-  width: 120px;
+  width: 260px;
   height: auto;
-  margin-bottom: 32px;
+  margin-bottom: 16px;
   filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.1));
 }
 
@@ -114,7 +114,7 @@ body.login-body::before {
 }
 
 .form-group input::placeholder {
-  color: #d1d5db;
+  color: #9ca3af;
 }
 
 #loginForm {
@@ -189,7 +189,7 @@ body.login-body::before {
   }
   
   .login-container img {
-    width: 100px;
+    width: 260px;
     margin-bottom: 24px;
   }
   
@@ -241,7 +241,7 @@ body.login-body::before {
   }
   
   .login-container img {
-    width: 90px;
+    width: 200px;
     margin-bottom: 20px;
   }
   

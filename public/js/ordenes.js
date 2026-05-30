@@ -1,5 +1,3 @@
-console.log("ordenes.js cargado correctamente");
-
 const tablaOrdenes = document.getElementById("tablaOrdenes");
 let ordenesGlobal = [];
 let modoEdicion = { activo: false, id: null };
@@ -98,26 +96,21 @@ async function abrirModal() {
   selectTipoServicio.innerHTML = "";
   
   try {
-    console.log("🔄 Cargando tipos de servicio...");
     const tiposResp = await fetchWithAuth("/api/tipo-servicio");
-    console.log("📡 Response tipos de servicio:", tiposResp.status);
     
     if (!tiposResp.ok) {
       console.error("❌ Error al cargar tipos de servicio:", tiposResp.status);
       selectTipoServicio.innerHTML = "<option value=''>Error al cargar tipos de servicio</option>";
     } else {
       const tipos = await tiposResp.json();
-      console.log("✅ Tipos de servicio cargados:", tipos);
       
       if (tipos.length === 0) {
         selectTipoServicio.innerHTML = "<option value=''>No hay tipos de servicio disponibles</option>";
       } else {
         tipos.forEach(t => {
-          console.log("Procesando tipo:", t); // Debug
           const option = document.createElement("option");
           option.value = t.id;
           const texto = t.detalle || t.nombre;
-          console.log(`ID: ${t.id}, Texto: ${texto}`); // Debug
           option.textContent = texto;
           selectTipoServicio.appendChild(option);
         });
@@ -133,16 +126,13 @@ async function abrirModal() {
   selectTecnico.innerHTML = "";
   
   try {
-    console.log("🔄 Cargando técnicos...");
     const tecnicosResp = await fetchWithAuth("/api/tecnicos");
-    console.log("📡 Response técnicos:", tecnicosResp.status);
     
     if (!tecnicosResp.ok) {
       console.error("❌ Error al cargar técnicos:", tecnicosResp.status);
       selectTecnico.innerHTML = "<option value=''>Error al cargar técnicos</option>";
     } else {
       const tecnicos = await tecnicosResp.json();
-      console.log("✅ Técnicos cargados:", tecnicos);
       
       if (tecnicos.length === 0) {
         selectTecnico.innerHTML = "<option value=''>No hay técnicos disponibles</option>";
@@ -160,8 +150,6 @@ async function abrirModal() {
     console.error("❌ Error al cargar técnicos:", error);
     selectTecnico.innerHTML = "<option value=''>Error al cargar técnicos</option>";
   }
-  
-  console.log(`✅ Datos cargados en modal de órdenes`);
 }
 
 // Mostrar modal de nueva orden (reset y abrir)
@@ -197,18 +185,6 @@ document.getElementById("formNuevaOrden").addEventListener("submit", async funct
     console.error("❌ ID de cliente inválido:", cliente_id);
     return;
   }
-
-  console.log("📝 Enviando orden:", { 
-    cliente_id, 
-    tipo_servicio_id, 
-    tecnico_id, 
-    observacion, 
-    estado, 
-    prioridad, 
-    costo,
-    fecha_creacion, 
-    fecha_servicio 
-  });
 
   try {
     const url = modoEdicion.activo ? `/api/ordenes/${modoEdicion.id}` : "/api/ordenes";

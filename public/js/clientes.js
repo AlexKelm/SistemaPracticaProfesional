@@ -1,4 +1,3 @@
-console.log("clientes.js cargado correctamente"); 
 const tablaClientes = document.getElementById("tablaClientes");
 let clientesGlobal = []; // Guardar todos los clientes
 

@@ -133,7 +133,7 @@
 .no-datos {
   text-align: center;
   padding: 40px;
-  color: #9ca3af;
+  color: #6b7280;
   font-style: italic;
 }
 
@@ -174,7 +174,7 @@
 }
 
 .clientes-header input::placeholder {
-  color: #d1d5db;
+  color: #9ca3af;
 }
 
 /* ========================================
@@ -379,7 +379,7 @@
 
 .no-ordenes {
   text-align: center;
-  color: #9ca3af;
+  color: #6b7280;
   padding: 32px !important;
   border: none !important;
   font-style: italic;

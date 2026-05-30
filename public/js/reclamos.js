@@ -1,5 +1,3 @@
-console.log("reclamos.js cargado correctamente");
-
 const tablaReclamos = document.getElementById("tablaReclamos");
 let reclamosGlobal = [];
 let modoEdicion = { activo: false, id: null };

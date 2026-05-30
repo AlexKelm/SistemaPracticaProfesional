@@ -54,7 +54,7 @@
 
 .sidebar-nav ul li a {
   text-decoration: none;
-  color: #cbd5e1;
+  color: #f1f5f9;
   font-weight: 500;
   font-size: 14px;
   display: flex;
@@ -234,7 +234,7 @@
 }
 
 .proximas-ordenes-list::-webkit-scrollbar-thumb:hover {
-  background: #9ca3af;
+  background: #6b7280;
 }
 
 .proximas-ordenes-list li {
@@ -340,7 +340,7 @@
 .no-ordenes {
   text-align: center;
   padding: 40px 20px;
-  color: #9ca3af;
+  color: #6b7280;
   font-style: italic;
 }
 
@@ -430,7 +430,7 @@
 .no-reclamos {
   padding: 20px;
   text-align: center;
-  color: #9ca3af;
+  color: #6b7280;
   font-style: italic;
   background: transparent !important;
   border: none !important;

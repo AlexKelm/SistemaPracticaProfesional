@@ -1,4 +1,3 @@
-console.log("usuarios.js cargado correctamente"); 
 const tablaUsuarios = document.getElementById("tablaUsuarios");
 let usuariosGlobal = []; // Guardar todos los usuarios
 

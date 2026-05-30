@@ -182,7 +182,7 @@ table tbody tr:hover {
 }
 
 .section-header input::placeholder {
-  color: #d1d5db;
+  color: #9ca3af;
 }
 
 /* Modal mejorado */
@@ -385,7 +385,7 @@ select:focus {
 .empty-state {
   text-align: center;
   padding: 60px 20px;
-  color: #9ca3af;
+  color: #6b7280;
 }
 
 .empty-state p {
